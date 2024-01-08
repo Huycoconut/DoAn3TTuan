@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "499101401392",
+    "firebase_url": "https://doan3tuan-24e74-default-rtdb.firebaseio.com",
+    "project_id": "doan3tuan-24e74",
+    "storage_bucket": "doan3tuan-24e74.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:499101401392:android:b11bd6ddb44de36dbac8f5",
+        "android_client_info": {
+          "package_name": "com.example.appbanhang_gearchina"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnrItPbszLwP5Nf5PUmlQ_FNmnpVdZLbo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
