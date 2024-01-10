@@ -4,7 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class Load_SanPham extends StatefulWidget {
-  const Load_SanPham({super.key});
+   Load_SanPham({Key?key}):super(key: key);
 
   @override
   State<Load_SanPham> createState() => _Load_SanPhamState();
@@ -43,7 +43,7 @@ class _Load_SanPhamState extends State<Load_SanPham> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const chiTietSp_Screen()),
+                      builder: (context) =>  chiTietSp_Screen(sanPham: _listSanPham[index],)),
                 );
               });
             },
@@ -52,8 +52,8 @@ class _Load_SanPhamState extends State<Load_SanPham> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    "assets/h2.jpg",
+                  Image.network(
+                   _listSanPham[index].Hinh,
                     fit: BoxFit.contain,
                     width: MediaQuery.of(context).size.width / 1,
                     height: MediaQuery.of(context).size.width / 4,

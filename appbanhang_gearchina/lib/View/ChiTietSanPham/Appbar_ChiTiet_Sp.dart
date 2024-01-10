@@ -1,3 +1,4 @@
+import 'package:appbanhang_gearchina/View/GioHang/GioHang_Screen.dart';
 import 'package:flutter/material.dart';
 
 class Appbar_ChiTiet_Sp extends StatefulWidget {
@@ -10,31 +11,36 @@ class Appbar_ChiTiet_Sp extends StatefulWidget {
 class _Appbar_ChiTiet_SpState extends State<Appbar_ChiTiet_Sp> {
   @override
   Widget build(BuildContext context) {
-    return   Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: const Icon(
-                    Icons.arrow_back_ios_new,
-                  ),
-                ),
-                const Text(
-                  "Chi tiết sản phẩm",
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.shopping_bag_outlined,
-                  ),
-                ),
-              ],
-            ) ;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+          ),
+        ),
+        const Text(
+          "Chi tiết sản phẩm",
+          style: TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        IconButton(
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const gioHang_Screen()));
+          },
+          icon: const Icon(
+            Icons.shopping_bag_outlined,
+          ),
+        ),
+      ],
+    );
   }
 }

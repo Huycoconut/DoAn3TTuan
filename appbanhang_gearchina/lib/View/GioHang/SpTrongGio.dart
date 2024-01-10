@@ -1,3 +1,4 @@
+import 'package:appbanhang_gearchina/View/ChiTietSanPham/ChiTietSp_Screen.dart';
 import 'package:flutter/material.dart';
 
 class SpTrongGio extends StatefulWidget {
@@ -12,6 +13,9 @@ class _SpTrongGioState extends State<SpTrongGio> {
   var _soLuong = 0;
   var _tongTien = 0;
   bool check = false;
+
+    final sp_trongGio = GioHang.HienSpTrongGio();
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;

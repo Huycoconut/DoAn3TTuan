@@ -3,7 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 class SanPham {
   final Ten;
   final Loai;
-  final Mota;
+  final MoTa;
   final Hinh;
   final SoLuong;
   final ThongSo;
@@ -17,7 +17,7 @@ class SanPham {
     required this.Id,
     required this.Loai,
     required this.Mau,
-    required this.Mota,
+    required this.MoTa,
     required this.SoLuong,
     required this.Ten,
     required this.ThongSo,
@@ -32,7 +32,7 @@ class SanPham {
       Id: snapshot.child('Id').value,
       Loai: snapshot.child('Loai').value,
       Mau: snapshot.child('Mau').value,
-      Mota: snapshot.child('Mota').value,
+      MoTa: snapshot.child('MoTa').value,
       SoLuong: snapshot.child('SoLuong').value,
       Ten: snapshot.child('Ten').value,
       ThongSo: snapshot.child('ThongSo').value,
