@@ -1,4 +1,5 @@
 import 'package:appbanhang_gearchina/View/ChiTietSanPham/ChiTietSp_Screen.dart';
+import 'package:appbanhang_gearchina/View/DangNhap_DangKy/login.dart';
 import 'package:appbanhang_gearchina/View/ThanhToan/ThanhToan_Screen.dart';
 import 'package:appbanhang_gearchina/View/GioHang/GioHang_Screen.dart';
 import 'package:appbanhang_gearchina/View/SanPham/SanPham_screen.dart';
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const sanPham_screen(),
+      home: Login(),
       debugShowCheckedModeBanner: false,
     );
   }
