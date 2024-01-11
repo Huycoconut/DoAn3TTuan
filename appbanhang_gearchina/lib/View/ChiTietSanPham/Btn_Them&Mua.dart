@@ -10,7 +10,9 @@ class Btn_Them_Mua extends StatefulWidget {
 }
 
 class _Btn_Them_MuaState extends State<Btn_Them_Mua> {
-  final bool _isPress = false;
+  final bool _isFirstSelected = false;
+  final bool _isSecondSelected = false;
+  final bool _isThirdSelected = false;
   final _soLuong = 0;
   final _tongTien = 0;
   @override
@@ -28,12 +30,17 @@ class _Btn_Them_MuaState extends State<Btn_Them_Mua> {
                 backgroundColor: const Color.fromRGBO(56, 60, 160, 20),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5))),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const gioHang_Screen()),
-              );
-            },
+            onPressed: _isFirstSelected == true ||
+                    _isSecondSelected == true ||
+                    _isThirdSelected == true
+                ? null
+                : () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const gioHang_Screen()),
+                    );
+                  },
             child: const Text(
               "Thêm vào giỏ hàng",
               style: TextStyle(color: Colors.white),

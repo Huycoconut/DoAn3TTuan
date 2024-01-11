@@ -17,13 +17,12 @@ class _Anh_SpState extends State<Anh_Sp> {
 
     final dbref = FirebaseDatabase.instance.ref().child('SanPham');
 
-    List<SanPham> _ListSp = [];
-
+    List<SanPham> ListSp = [];
 
     @override
     void initState() {
       dbref.onValue.listen((event) {
-        _ListSp = event.snapshot.children.map((snapshot) {
+        ListSp = event.snapshot.children.map((snapshot) {
           return SanPham.fromSnapshot(snapshot);
         }).toList();
       });
@@ -35,8 +34,8 @@ class _Anh_SpState extends State<Anh_Sp> {
         return Expanded(
           flex: 1,
           child: Image.network(
-            _ListSp[index].Hinh,
-            fit: BoxFit.cover,
+            ListSp[index].Hinh,
+            fit: BoxFit.fill,
             width: media.width / 1,
             height: media.height / 2,
           ),

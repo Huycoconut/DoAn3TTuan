@@ -1,6 +1,8 @@
 import 'package:appbanhang_gearchina/View/ChiTietSanPham/Anh_Sp.dart';
 import 'package:appbanhang_gearchina/View/ChiTietSanPham/Appbar_ChiTiet_Sp.dart';
+import 'package:appbanhang_gearchina/View/ChiTietSanPham/Btn_Them&Mua.dart';
 import 'package:appbanhang_gearchina/View/ChiTietSanPham/MauSac_Sp.dart';
+import 'package:appbanhang_gearchina/View/ChiTietSanPham/QL_SoLuongSp.dart';
 import 'package:appbanhang_gearchina/View/GioHang/class_LuuTruSp_TrongGio.dart';
 import 'package:appbanhang_gearchina/View/SanPham/data_SanPham.dart';
 import 'package:appbanhang_gearchina/View/ThanhToan/ThanhToan_Screen.dart';
@@ -21,7 +23,7 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
   SanPham? _chiTietSp;
   @override
   void initState() {
-    // TODO: implement initState
+    super.initState();
     _chiTietSp = widget.sanPham;
   }
 
@@ -32,8 +34,16 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
   }
 
   final bool _isPress = false;
-  var _soLuong = 0;
-  var _tongTien = 0;
+
+  int _SoLuong = 0;
+
+  void _updateData(int index, int newSoLuong) async {
+    final DatabaseReference ref = dbref.child(index.toString());
+    await ref.update({
+      'SoLuong': newSoLuong,
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
@@ -99,27 +109,20 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                                           IconButton(
                                               onPressed: () {
                                                 setState(() {
-                                                  if (_soLuong <= 0) {
-                                                    _soLuong = 0;
-                                                  } else {
-                                                    _soLuong--;
-                                                  }
-                                                  _tongTien =
-                                                      _tongTien - 1400000;
-                                                  if (_tongTien <= 0) {
-                                                    _tongTien = 0;
-                                                  }
+                                                  _chiTietSp!.SoLuong--;
+                                                  _updateData(_chiTietSp!.Id,_chiTietSp!.SoLuong);
                                                 });
                                               },
                                               icon: const Icon(
                                                   Icons.remove_circle_outline)),
-                                          Text('$_soLuong'),
+                                          Text((_chiTietSp?.SoLuong ?? 0)
+                                              .toString()),
                                           IconButton(
                                             onPressed: () {
                                               setState(() {
-                                                _soLuong++;
+                                                _chiTietSp!.SoLuong++;
+                                                _updateData(_chiTietSp!.Id,_chiTietSp!.SoLuong);
                                               });
-                                              _tongTien = _tongTien + 1400000;
                                             },
                                             icon: const Icon(
                                                 Icons.add_circle_outline,
@@ -164,62 +167,7 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                             const SizedBox(
                               height: 50,
                             ),
-                            Container(
-                              padding: const EdgeInsets.only(left: 22),
-                              width: media.width / 0.1,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        padding: const EdgeInsets.only(
-                                            left: 10, right: 10),
-                                        backgroundColor: const Color.fromRGBO(
-                                            56, 60, 160, 20),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5))),
-                                    onPressed: () {
-                                      _ThemSpVaoGio();
-                                    },
-                                    child: const Text(
-                                      "Thêm vào giỏ hàng",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        padding: const EdgeInsets.only(
-                                            left: 50, right: 50),
-                                        backgroundColor: const Color.fromRGBO(
-                                            56, 60, 160, 20),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5))),
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const thanhToan_Screen()),
-                                      );
-                                    },
-                                    child: const Text(
-                                      "Mua ngay",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 17),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  )
-                                ],
-                              ),
-                            )
+                            const Btn_Them_Mua()
                           ],
                         ),
                       ),

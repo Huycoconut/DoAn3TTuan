@@ -5,10 +5,10 @@ class SanPham {
   final Loai;
   final MoTa;
   final Hinh;
-  final SoLuong;
+  int SoLuong=0;
   final ThongSo;
   final TrangThai;
-  final Id;
+  var Id;
   final Mau;
   final Gia;
 
@@ -33,7 +33,7 @@ class SanPham {
       Loai: snapshot.child('Loai').value,
       Mau: snapshot.child('Mau').value,
       MoTa: snapshot.child('MoTa').value,
-      SoLuong: snapshot.child('SoLuong').value,
+      SoLuong: int.parse(snapshot.child('SoLuong').value.toString()),
       Ten: snapshot.child('Ten').value,
       ThongSo: snapshot.child('ThongSo').value,
       TrangThai: snapshot.child('TrangThai').value,

@@ -11,9 +11,13 @@ class MauSac_Sp extends StatefulWidget {
 
 class _MauSac_SpState extends State<MauSac_Sp> {
   final dbref = FirebaseDatabase.instance.ref().child('SanPham/');
-  final bool _isPress = false;
+  bool _isFirstSelected = false;
+  bool _isSecondSelected = true;
+  bool _isThirdSelected = true;
+
   final _soLuong = 0;
   final _tongTien = 0;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -31,33 +35,54 @@ class _MauSac_SpState extends State<MauSac_Sp> {
           ),
         ),
         Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const SizedBox(
               width: 15,
             ),
             IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.circle,
+              icon: Icon(
+                _isFirstSelected ? Icons.circle : Icons.check_circle_rounded,
                 size: 40,
                 color: Colors.grey,
               ),
+              onPressed: () {
+                setState(() {
+                  _isFirstSelected = !_isFirstSelected;
+                  _isSecondSelected = true;
+                  _isThirdSelected = true;
+                });
+              },
             ),
+            const SizedBox(width: 16),
             IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.circle,
+              icon: Icon(
+                _isSecondSelected ? Icons.circle : Icons.check_circle_rounded,
                 size: 40,
               ),
+              onPressed: () {
+                setState(() {
+                  _isFirstSelected = true;
+                  _isSecondSelected = !_isSecondSelected;
+                  _isThirdSelected = true;
+                });
+              },
             ),
+            const SizedBox(width: 16),
             IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.circle,
+              icon: Icon(
+                _isThirdSelected ? Icons.circle : Icons.check_circle_rounded,
                 size: 40,
                 color: Colors.pinkAccent,
               ),
-            )
+              onPressed: () {
+                setState(() {
+                  _isThirdSelected = !_isThirdSelected;
+                  _isFirstSelected = true;
+                  _isSecondSelected = true;
+                });
+              },
+            ),
           ],
         )
       ],

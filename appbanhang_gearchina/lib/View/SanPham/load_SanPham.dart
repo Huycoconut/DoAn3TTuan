@@ -18,7 +18,6 @@ class _Load_SanPhamState extends State<Load_SanPham> {
   @override
   void initState() {
     // TODO: implement initState
-
     dbref.onValue.listen((event) {
       setState(() {
         _listSanPham = event.snapshot.children.map((snapshot) {

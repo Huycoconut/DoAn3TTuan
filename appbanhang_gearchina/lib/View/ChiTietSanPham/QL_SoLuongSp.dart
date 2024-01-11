@@ -1,75 +1,75 @@
+import 'package:appbanhang_gearchina/View/SanPham/data_SanPham.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 
-class QL_SoLuongSp extends StatefulWidget {
-  const QL_SoLuongSp({super.key});
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
 
   @override
-  State<QL_SoLuongSp> createState() => _QL_SoLuongSpState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _QL_SoLuongSpState extends State<QL_SoLuongSp> {
-  final bool _isPress = false;
-  var _soLuong = 0;
-  var _tongTien = 0;
+class _MyHomePageState extends State<MyHomePage> {
+  final _sanPhamRef = FirebaseDatabase.instance.ref('SanPham');
+
+  List<SanPham> _listSanPham = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    _sanPhamRef.onValue.listen((event) {
+      setState(() {
+        _listSanPham = event.snapshot.children.map((snapshot) {
+          return SanPham.fromSnapshot(snapshot);
+        }).toList();
+      });
+    });
+  }
+
+  void _updateData(SanPham sanPham) async {
+    final DatabaseReference ref = _sanPhamRef.child(sanPham.Id.toString());
+    await ref.update({
+      'SoLuong': sanPham.SoLuong,
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        const Text(
-          "Macbook Air M1",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Column(
-          children: [
-            Container(
-              height: 35,
-              alignment: Alignment.topCenter,
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Row(
-                children: [
-                  IconButton(
-                      onPressed: () {
-                        setState(() {
-                          if (_soLuong <= 0) {
-                            _soLuong = 0;
-                          } else {
-                            _soLuong--;
-                          }
-                          _tongTien = _tongTien - 1400000;
-                          if (_tongTien <= 0) {
-                            _tongTien = 0;
-                          }
-                        });
-                      },
-                      icon: const Icon(Icons.remove_circle_outline)),
-                  Text('$_soLuong'),
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _soLuong++;
-                      });
-                      _tongTien = _tongTien + 1400000;
-                    },
-                    icon: const Icon(Icons.add_circle_outline,
-                        color: Colors.black),
-                  ),
-                ],
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Realtime Database Demo'),
+      ),
+      body: ListView(
+        children: _listSanPham.map((sanPham) {
+          return ListTile(
+            title: Text(sanPham.Ten),
+            subtitle: Text(sanPham.Gia.toString()),
+            trailing: Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.add),
+                  onPressed: () {
+                    sanPham.SoLuong++;
+                    _updateData(sanPham);
+                  },
+                ),
+                Text(sanPham.SoLuong.toString()),
+                IconButton(
+                  icon: const Icon(Icons.remove),
+                  onPressed: () {
+                    if (sanPham.SoLuong > 0) {
+                      sanPham.SoLuong--;
+                      _updateData(sanPham);
+                    }
+                  },
+                ),
+              ],
             ),
-            const Text(
-              "Số lượng",
-              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w300),
-            )
-          ],
-        ),
-      ],
+          );
+        }).toList(),
+      ),
     );
   }
 }
