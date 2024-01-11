@@ -1,5 +1,6 @@
 import 'package:appbanhang_gearchina/View/ChiTietSanPham/ChiTietSp_Screen.dart';
 import 'package:appbanhang_gearchina/View/ChiTietSanPham/QL_SoLuongSp.dart';
+import 'package:appbanhang_gearchina/View/DangNhap_DangKy/login.dart';
 import 'package:appbanhang_gearchina/View/ThanhToan/ThanhToan_Screen.dart';
 import 'package:appbanhang_gearchina/View/GioHang/GioHang_Screen.dart';
 import 'package:appbanhang_gearchina/View/SanPham/SanPham_screen.dart';
@@ -28,6 +29,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: sanPham_screen(),
+
+  
       debugShowCheckedModeBanner: false,
     );
   }
