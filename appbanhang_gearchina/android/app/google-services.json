@@ -13,7 +13,12 @@
           "package_name": "com.example.appbanhang_gearchina"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "499101401392-djgorgjl7eorio05kguh0h49ia19hmce.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCnrItPbszLwP5Nf5PUmlQ_FNmnpVdZLbo"
@@ -21,7 +26,55 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "499101401392-djgorgjl7eorio05kguh0h49ia19hmce.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "499101401392-l8ggo8fc4oasicq3d1ngn50728ncn4v9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.appbanhangGearchina"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:499101401392:android:11e852132af3f43abac8f5",
+        "android_client_info": {
+          "package_name": "com.example.loginform"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "499101401392-djgorgjl7eorio05kguh0h49ia19hmce.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnrItPbszLwP5Nf5PUmlQ_FNmnpVdZLbo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "499101401392-djgorgjl7eorio05kguh0h49ia19hmce.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "499101401392-l8ggo8fc4oasicq3d1ngn50728ncn4v9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.appbanhangGearchina"
+              }
+            }
+          ]
         }
       }
     }

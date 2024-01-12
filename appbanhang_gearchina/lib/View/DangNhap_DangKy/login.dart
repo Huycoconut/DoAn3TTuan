@@ -1,3 +1,4 @@
+import 'package:appbanhang_gearchina/View/Trang_chu/Home.dart';
 import 'package:flutter/material.dart';
 import 'package:appbanhang_gearchina/View/QuanLyTaiKhoan/account_st.dart';
 import 'package:appbanhang_gearchina/View/DangNhap_DangKy/register.dart';
@@ -28,7 +29,7 @@ class _LoginState extends State<Login> {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: taikhoan.text, password: matkhau.text);
           // sửa đường dẫn về trang chủ
-      Navigator.push(context, MaterialPageRoute(builder: (context) => QuanLytaiKhoan()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
       wrongLogin(e.code);
