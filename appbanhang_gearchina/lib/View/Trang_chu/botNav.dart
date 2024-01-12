@@ -1,5 +1,6 @@
 
 import 'package:appbanhang_gearchina/View/GioHang/GioHang_Screen.dart';
+import 'package:appbanhang_gearchina/View/QuanLyTaiKhoan/account_st.dart';
 import 'package:appbanhang_gearchina/View/SanPham/SanPham_screen.dart';
 import 'package:appbanhang_gearchina/View/Trang_chu/Home.dart';
 import 'package:flutter/material.dart';
@@ -14,12 +15,13 @@ class bottomNav extends StatefulWidget {
 class _bottomNavState extends State<bottomNav> {
   int _currentIndex = 0;
   // thêm trang thông báo và cá nhân vào danh sách tabs để chuyển trang
-  final tabs = [HomeScreen()];
+  final tabs = [HomeScreen(),HomeScreen(),QuanLytaiKhoan()];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-      backgroundColor: const Color.fromRGBO(56,60,160,20),  
+      backgroundColor: const Color.fromRGBO(56,60,160,20), 
+      automaticallyImplyLeading: false,  
         actions: [
           IconButton(onPressed: (){
             // showSearch(
@@ -31,7 +33,7 @@ class _bottomNavState extends State<bottomNav> {
           }, icon: const Icon(Icons.search), color: Colors.white,),
          
           IconButton(onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => gioHang_Screen()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => gioHang_Screen(cartItems: [],)));
             
           }, icon: const Icon(Icons.shopping_bag),color: Colors.white),
           

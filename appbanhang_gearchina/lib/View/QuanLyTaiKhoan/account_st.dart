@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:appbanhang_gearchina/View/DangNhap_DangKy/login.dart';
+import 'package:appbanhang_gearchina/View/Trang_chu/botNav.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class QuanLytaiKhoan extends StatefulWidget {
   const QuanLytaiKhoan({super.key});
@@ -13,7 +16,7 @@ class _QuanLytaiKhoanState extends State<QuanLytaiKhoan> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        margin: EdgeInsets.all(30),
+        margin: EdgeInsets.all(20),
         width: MediaQuery.of(context).size.width,
         alignment: Alignment.topLeft,
         child: SingleChildScrollView(
@@ -22,6 +25,7 @@ class _QuanLytaiKhoanState extends State<QuanLytaiKhoan> {
           children: [
             IconButton(onPressed: () {
               // back ve trang chu
+              Navigator.push(context, MaterialPageRoute(builder: (context) => bottomNav()));
             }, icon: Icon(Icons.arrow_back_ios)),
             Text("Quản Lý Tài Khoản",style: TextStyle(fontSize: 35.0,fontWeight: FontWeight.bold ),),
             Row(
@@ -90,8 +94,23 @@ class _QuanLytaiKhoanState extends State<QuanLytaiKhoan> {
                 )
               ),
             ),
+            //quan ly don hang
             const Padding(padding: EdgeInsets.only(top: 30)),
-
+            ElevatedButton(
+              onPressed: () {
+                //Đường dẫn form quan lý đơn hàng
+              },
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size(500, 60),
+                primary: Color.fromRGBO(56,60,160,20),
+                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              child: Text('Quản Lý Đơn Hàng',style: TextStyle(fontSize: 20.0,color: Colors.white),),
+            ),
+            const Padding(padding: EdgeInsets.only(top: 30)),
             //dangxuat
             ElevatedButton(
               onPressed: () {
@@ -122,7 +141,18 @@ class _QuanLytaiKhoanState extends State<QuanLytaiKhoan> {
 
 //popup thông báo
 class LogoutDialog extends StatelessWidget {
-  const LogoutDialog({super.key});
+  LogoutDialog({super.key});
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> _SignOut(BuildContext context) async {
+    try {
+      await _googleSignIn.signOut();
+      await _auth.signOut();
+    } catch (error) {
+      print(error);
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -136,7 +166,8 @@ class LogoutDialog extends StatelessWidget {
           child: Text("Thoát",style: TextStyle(fontSize: 15.0,color: Color.fromRGBO(56,60,160,20)),)
         ),
         TextButton(
-          onPressed: () {
+          onPressed: () async {
+            await _SignOut(context);
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
