@@ -10,3 +10,22 @@ class GioHang {
     return items; 
   }
 }
+class CRUD_GioHang {
+  static List<SanPham> _cartItems = [];
+
+  static List<SanPham> HienSpTrongGio() {
+    return _cartItems;
+  }
+
+  static void ThemSpVaoGio(SanPham sanPham) {
+    _cartItems.add(sanPham);
+  }
+
+  static void XoaSpKhoiGio(SanPham sanPham) {
+    _cartItems.remove(sanPham);
+  }
+
+  static void XoaTatCaSp() {
+    _cartItems.clear();
+  }
+}

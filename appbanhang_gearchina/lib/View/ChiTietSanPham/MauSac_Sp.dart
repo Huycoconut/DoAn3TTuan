@@ -17,6 +17,12 @@ class _MauSac_SpState extends State<MauSac_Sp> {
 
   final _soLuong = 0;
   final _tongTien = 0;
+  void _UpdateMauSac(int indedx, int newMauSac) async {
+    final DatabaseReference ref = dbref.child(indedx.toString());
+    await ref.update({
+      'TrangThai':newMauSac,
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +57,7 @@ class _MauSac_SpState extends State<MauSac_Sp> {
                   _isFirstSelected = !_isFirstSelected;
                   _isSecondSelected = true;
                   _isThirdSelected = true;
+                  
                 });
               },
             ),

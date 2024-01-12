@@ -5,14 +5,16 @@ class SanPham {
   final Loai;
   final MoTa;
   final Hinh;
-  int SoLuong=0;
+  int SoLuong = 0;
   final ThongSo;
   final TrangThai;
   var Id;
   final Mau;
   final Gia;
+  final MauSac;
 
   SanPham({
+    required this.MauSac,
     required this.Hinh,
     required this.Id,
     required this.Loai,
@@ -27,6 +29,7 @@ class SanPham {
 
   factory SanPham.fromSnapshot(DataSnapshot snapshot) {
     return SanPham(
+      MauSac: snapshot.child("MauSac").value,
       Gia: snapshot.child('Gia').value,
       Hinh: snapshot.child('Hinh').value,
       Id: snapshot.child('Id').value,
@@ -39,4 +42,21 @@ class SanPham {
       TrangThai: snapshot.child('TrangThai').value,
     );
   }
+
+  toJson() {}
 }
+
+class MauSac_SanPham {
+  final Id;
+  final TrangThai;
+
+  MauSac_SanPham({required this.Id, required this.TrangThai});
+
+  factory MauSac_SanPham.fromMap(Map<String, dynamic> map) {
+    return MauSac_SanPham(Id: map['id'], TrangThai: map['TrangThai']);
+  }
+}
+
+/*       MauSac: (snapshot.child("MauSac").value as List).map((data) {
+        return MauSac_SanPham.fromMap(data);
+      }).toList(), */

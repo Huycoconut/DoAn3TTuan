@@ -1,27 +1,39 @@
+import 'package:flutter/material.dart';
 import 'package:appbanhang_gearchina/View/GioHang/class_LuuTruSp_TrongGio.dart';
 import 'package:appbanhang_gearchina/View/SanPham/data_SanPham.dart';
 import 'package:appbanhang_gearchina/View/ThanhToan/ThanhToan_Screen.dart';
-import 'package:appbanhang_gearchina/View/GioHang/SpTrongGio.dart';
-import 'package:flutter/material.dart';
 
 class gioHang_Screen extends StatefulWidget {
-  const gioHang_Screen({Key? key}) : super(key: key);
+  final List<SanPham> cartItems;
+
+  const gioHang_Screen({super.key, required this.cartItems});
 
   @override
   State<gioHang_Screen> createState() => _gioHang_ScreenState();
 }
 
 class _gioHang_ScreenState extends State<gioHang_Screen> {
-  //SanPham? _sanPhamTrongGio;
-  final sp_trongGio = GioHang.HienSpTrongGio();
+  List<SanPham> cartItems = [];
 
-  void addProduct(SanPham sanPhamDuocThem) {
-    sp_trongGio.add(sanPhamDuocThem);
+  @override
+  void initState() {
+    super.initState();
+    _loadCartItems();
   }
-  final bool _isPress = false;
-  var _soLuong = 0;
-  var _tongTien = 0;
+
+  void _loadCartItems() {
+    setState(() {
+      cartItems = GioHang.HienSpTrongGio();
+    });
+  }
+
+  void _addToCart(SanPham sanPham) {
+    GioHang.ThemSpVaoGio(sanPham);
+    // Hiển thị thông báo thành công hoặc cập nhật giao diện
+  }
+
   bool check = false;
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
@@ -58,152 +70,52 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
           ),
           Expanded(
             child: ListView.builder(
-                itemCount: sp_trongGio.length,
-                itemBuilder: (context, index) {
-                  final item = sp_trongGio[index];
-                  return SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Container(
-                          child: Row(
+              itemCount: widget.cartItems.length,
+              itemBuilder: (context, index) {
+                final sanPham = widget.cartItems[index];
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Column(
                             children: [
-                              Checkbox(
-                                value: check,
-                                onChanged: (bool? check) => setState(() {
-                                  this.check = check!;
-                                }),
+                              Image.network(
+                                sanPham.Hinh,
+                                width: media.width / 3,
                               ),
-                              Image.asset(
-                                "assets/h2.jpg",
-                                fit: BoxFit.contain,
-                                width: media.width / 4.5,
-                                height: media.height / 7,
-                              ),
-                              const SizedBox(
-                                width: 15,
-                              ),
-                              Expanded(
-                                child: Container(
-                                  //padding: const EdgeInsets.only(right: 85),
-                                  child: Column(
-                                    //  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        item.Ten,
-                                        style: const TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.all(5),
-                                            child: const Text(
-                                              "Màu sắc: ",
-                                              textAlign: TextAlign.start,
-                                              style:
-                                                  TextStyle(color: Colors.grey),
-                                            ),
-                                          ),
-                                          Container(
-                                              padding: const EdgeInsets.only(
-                                                  right: 45),
-                                              child: const Text(
-                                                "Bạc",
-                                                textAlign: TextAlign.start,
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              )),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Container(
-                                            height: 35,
-                                            alignment: Alignment.topCenter,
-                                            decoration: BoxDecoration(
-                                              color: Colors.grey[200],
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                IconButton(
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        if (_soLuong <= 0) {
-                                                          _soLuong = 0;
-                                                        } else {
-                                                          _soLuong--;
-                                                        }
-                                                        _tongTien =
-                                                            _tongTien - 1400000;
-                                                        if (_tongTien <= 0) {
-                                                          _tongTien = 0;
-                                                        }
-                                                      });
-                                                    },
-                                                    icon: const Icon(Icons
-                                                        .remove_circle_outline)),
-                                                Text('$_soLuong'),
-                                                IconButton(
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      _soLuong++;
-                                                    });
-                                                    _tongTien =
-                                                        _tongTien + 1400000;
-                                                  },
-                                                  icon: const Icon(
-                                                      Icons.add_circle_outline,
-                                                      color: Colors.black),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            '$_tongTien',
-                                            softWrap: true,
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 17),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )
                             ],
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                }),
+                          Column(
+                            children: [
+                              Text(sanPham.Ten),
+                              Text(sanPham.SoLuong.toString())
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.only(
-                    left: 90, right: 90, top: 10, bottom: 10),
-                backgroundColor: const Color.fromRGBO(56, 60, 160, 20),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10))),
+              padding: const EdgeInsets.only(
+                  left: 90, right: 90, top: 10, bottom: 10),
+              backgroundColor: const Color.fromRGBO(56, 60, 160, 20),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
             onPressed: () {
-              setState(() {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const thanhToan_Screen()),
-                );
-              });
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>  thanhToan_Screen(payItems: cartItems),
+                ),
+              );
             },
             child: const Text(
               "Thanh toán",

@@ -14,7 +14,7 @@ class _SpTrongGioState extends State<SpTrongGio> {
   var _tongTien = 0;
   bool check = false;
 
-    final sp_trongGio = GioHang.HienSpTrongGio();
+  //  final sp_trongGio = GioHang.HienSpTrongGio();
 
   @override
   Widget build(BuildContext context) {

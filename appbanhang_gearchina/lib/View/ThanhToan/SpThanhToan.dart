@@ -1,3 +1,5 @@
+import 'package:appbanhang_gearchina/View/GioHang/class_LuuTruSp_TrongGio.dart';
+import 'package:appbanhang_gearchina/View/SanPham/data_SanPham.dart';
 import 'package:flutter/material.dart';
 
 class SpThanhToan extends StatefulWidget {
@@ -9,6 +11,26 @@ class SpThanhToan extends StatefulWidget {
 
 class _SpThanhToanState extends State<SpThanhToan> {
   final _tongTien = 0;
+
+    List<SanPham> cartItems = [];
+
+
+    @override
+  void initState() {
+    super.initState();
+    _loadCartItems();
+  }
+
+  void _loadCartItems() {
+    setState(() {
+      cartItems = GioHang.HienSpTrongGio();
+    });
+  }
+
+  void _addToCart(SanPham sanPham) {
+    GioHang.ThemSpVaoGio(sanPham);
+    // Hiển thị thông báo thành công hoặc cập nhật giao diện
+  }
 
   @override
   Widget build(BuildContext context) {

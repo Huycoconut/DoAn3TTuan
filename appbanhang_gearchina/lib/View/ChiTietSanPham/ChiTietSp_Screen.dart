@@ -3,6 +3,7 @@ import 'package:appbanhang_gearchina/View/ChiTietSanPham/Appbar_ChiTiet_Sp.dart'
 import 'package:appbanhang_gearchina/View/ChiTietSanPham/Btn_Them&Mua.dart';
 import 'package:appbanhang_gearchina/View/ChiTietSanPham/MauSac_Sp.dart';
 import 'package:appbanhang_gearchina/View/ChiTietSanPham/QL_SoLuongSp.dart';
+import 'package:appbanhang_gearchina/View/GioHang/GioHang_Screen.dart';
 import 'package:appbanhang_gearchina/View/GioHang/class_LuuTruSp_TrongGio.dart';
 import 'package:appbanhang_gearchina/View/SanPham/data_SanPham.dart';
 import 'package:appbanhang_gearchina/View/ThanhToan/ThanhToan_Screen.dart';
@@ -27,22 +28,63 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
     _chiTietSp = widget.sanPham;
   }
 
-  void _ThemSpVaoGio() {
-    GioHang.ThemSpVaoGio(widget.sanPham);
-    ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text("Đã thêm vào giỏ hàng")));
+  void _ThemVaMua() {
+    SanPham currentProduct = SanPham(
+      Id: _chiTietSp!.Id,
+      Ten: _chiTietSp!.Ten,
+      SoLuong: _chiTietSp!.SoLuong,
+      Gia: _chiTietSp!.Gia,
+      Hinh: _chiTietSp!.Hinh,
+      Loai: _chiTietSp!.Loai,
+      Mau: _chiTietSp!.Mau,
+      MauSac: _chiTietSp!.MauSac,
+      MoTa: _chiTietSp!.MoTa,
+      ThongSo: _chiTietSp!.ThongSo,
+      TrangThai: _chiTietSp!.TrangThai,
+    );
+    cartItems.add(currentProduct);
+    payItems.add(currentProduct);
   }
 
-  final bool _isPress = false;
-
-  int _SoLuong = 0;
-
+//Thêm sản phẩm vào giỏ hàng
+  List<SanPham> cartItems = [];
+//Mua sản phẩm
+  List<SanPham> payItems = [];
+//Cập nhật số lượng sản phẩm
   void _updateData(int index, int newSoLuong) async {
     final DatabaseReference ref = dbref.child(index.toString());
     await ref.update({
       'SoLuong': newSoLuong,
     });
   }
+
+//Cập nhật màu được chọn
+  bool _isFirstSelected = false;
+  bool _isSecondSelected = true;
+  bool _isThirdSelected = true;
+
+  int currentTrangThai = 0;
+
+  void updateTrangThai(int index, int trangThai) {
+    DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
+    DatabaseReference sanPhamReference = databaseReference
+        .child('SanPham')
+        .child(index.toString())
+        .child('MauSac/$index');
+    int newTrangThai = (trangThai == 0) ? 1 : 0;
+
+    sanPhamReference.update({'TrangThai': newTrangThai}).then((value) {
+      print('Cập nhật giá trị thành công cho index $index.');
+    }).catchError((error) {
+      print('Có lỗi xảy ra khi cập nhật giá trị cho index $index: $error');
+    });
+  }
+
+  List<Map<String, dynamic>> indexList = [
+    {'index': 0, 'TrangThai': 0},
+    {'index': 1, 'TrangThai': 0},
+    {'index': 2, 'TrangThai': 0},
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +152,8 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                                               onPressed: () {
                                                 setState(() {
                                                   _chiTietSp!.SoLuong--;
-                                                  _updateData(_chiTietSp!.Id,_chiTietSp!.SoLuong);
+                                                  _updateData(_chiTietSp!.Id,
+                                                      _chiTietSp!.SoLuong);
                                                 });
                                               },
                                               icon: const Icon(
@@ -121,7 +164,8 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                                             onPressed: () {
                                               setState(() {
                                                 _chiTietSp!.SoLuong++;
-                                                _updateData(_chiTietSp!.Id,_chiTietSp!.SoLuong);
+                                                _updateData(_chiTietSp!.Id,
+                                                    _chiTietSp!.SoLuong);
                                               });
                                             },
                                             icon: const Icon(
@@ -141,7 +185,107 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                                 ),
                               ],
                             ),
-                            const MauSac_Sp(),
+                            //Màu sắc sản phẩm
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  margin:
+                                      const EdgeInsets.only(left: 25, top: 15),
+                                  child: const Text(
+                                    "Màu sắc",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(
+                                      width: 15,
+                                    ),
+                                    IconButton(
+                                      icon: Icon(
+                                        _isFirstSelected
+                                            ? Icons.circle
+                                            : Icons.check_circle_rounded,
+                                        size: 40,
+                                        color: Colors.grey,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _isFirstSelected = !_isFirstSelected;
+                                          _isSecondSelected = true;
+                                          _isThirdSelected = true;
+
+                                          indexList[0]['TrangThai'] =
+                                              (indexList[0]['TrangThai'] == 0)
+                                                  ? 1
+                                                  : 0;
+                                          updateTrangThai(indexList[0]['index'],
+                                              indexList[0]['TrangThai']);
+                                        });
+                                      },
+                                    ),
+                                    const SizedBox(width: 16),
+                                    IconButton(
+                                      icon: Icon(
+                                        _isSecondSelected
+                                            ? Icons.circle
+                                            : Icons.check_circle_rounded,
+                                        size: 40,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _isFirstSelected = true;
+                                          _isSecondSelected =
+                                              !_isSecondSelected;
+                                          _isThirdSelected = true;
+                                          currentTrangThai =
+                                              (currentTrangThai == 0) ? 1 : 0;
+
+                                          indexList[1]['TrangThai'] =
+                                              (indexList[1]['TrangThai'] == 0)
+                                                  ? 1
+                                                  : 0;
+                                          updateTrangThai(indexList[0]['index'],
+                                              indexList[1]['TrangThai']);
+                                        });
+                                      },
+                                    ),
+                                    const SizedBox(width: 16),
+                                    IconButton(
+                                      icon: Icon(
+                                        _isThirdSelected
+                                            ? Icons.circle
+                                            : Icons.check_circle_rounded,
+                                        size: 40,
+                                        color: Colors.pinkAccent,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _isThirdSelected = !_isThirdSelected;
+                                          _isFirstSelected = true;
+                                          _isSecondSelected = true;
+                                          currentTrangThai =
+                                              (currentTrangThai == 0) ? 1 : 0;
+
+                                          indexList[2]['TrangThai'] =
+                                              (indexList[2]['TrangThai'] == 0)
+                                                  ? 1
+                                                  : 0;
+                                          updateTrangThai(indexList[0]['index'],
+                                              indexList[2]['TrangThai']);
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
                             Container(
                               margin: const EdgeInsets.only(left: 25, top: 15),
                               child: const Text(
@@ -160,35 +304,115 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                                 softWrap: true,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w300,
-                                  fontSize: 10,
+                                  fontSize: 15,
                                 ),
                               ),
                             ),
                             const SizedBox(
                               height: 50,
                             ),
-                            const Btn_Them_Mua()
+                            //Giỏ hàng
+                            Container(
+                              padding: const EdgeInsets.only(left: 22),
+                              width: media.width / 0.1,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.only(
+                                            left: 10, right: 10),
+                                        backgroundColor: const Color.fromRGBO(
+                                            56, 60, 160, 20),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5))),
+                                    onPressed: () {
+                                      _ThemVaMua();
+                                    },
+                                    child: const Text(
+                                      "Thêm vào giỏ hàng",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.only(
+                                            left: 50, right: 50),
+                                        backgroundColor: const Color.fromRGBO(
+                                            56, 60, 160, 20),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5))),
+                                    onPressed: () {
+                                      _ThemVaMua();
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                thanhToan_Screen(
+                                                  payItems: payItems,
+                                                )),
+                                      );
+                                    },
+                                    child: const Text(
+                                      "Mua ngay",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 17),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  )
+                                ],
+                              ),
+                            )
                           ],
                         ),
                       ),
                     ),
-                    const Appbar_ChiTiet_Sp()
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: const Icon(
+                            Icons.arrow_back_ios_new,
+                          ),
+                        ),
+                        const Text(
+                          "Chi tiết sản phẩm",
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => gioHang_Screen(
+                                          cartItems: cartItems,
+                                        )));
+                          },
+                          icon: const Icon(
+                            Icons.shopping_bag_outlined,
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 )
               ]),
         ),
       ),
     );
-  }
-}
-
-class GioHang {
-  static List<SanPham> items = [];
-  static void ThemSpVaoGio(SanPham sanPham) {
-    items.add(sanPham);
-  }
-
-  static List<SanPham> HienSpTrongGio() {
-    return items;
   }
 }
