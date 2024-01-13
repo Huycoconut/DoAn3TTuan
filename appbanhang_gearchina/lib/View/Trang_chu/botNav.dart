@@ -31,7 +31,7 @@ class _bottomNavState extends State<bottomNav> {
           }, icon: const Icon(Icons.search), color: Colors.white,),
          
           IconButton(onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => gioHang_Screen()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => gioHang_Screen(cartItems: [],)));
             
           }, icon: const Icon(Icons.shopping_bag),color: Colors.white),
           

@@ -62,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     if (sanPham.SoLuong > 0) {
                       sanPham.SoLuong--;
                       _updateData(sanPham);
-                    }
+                    } 
                   },
                 ),
               ],

@@ -47,13 +47,11 @@ class SanPham {
 }
 
 class MauSac_SanPham {
-  final Id;
-  final TrangThai;
+  final TenMau;
+  MauSac_SanPham({required this.TenMau});
 
-  MauSac_SanPham({required this.Id, required this.TrangThai});
-
-  factory MauSac_SanPham.fromMap(Map<String, dynamic> map) {
-    return MauSac_SanPham(Id: map['id'], TrangThai: map['TrangThai']);
+  factory MauSac_SanPham.fromSnapshot(DataSnapshot snapshot) {
+    return MauSac_SanPham(TenMau: snapshot.child('TenMau').value);
   }
 }
 

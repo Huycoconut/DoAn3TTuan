@@ -4,7 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class Load_SanPham extends StatefulWidget {
-   Load_SanPham({Key?key}):super(key: key);
+  const Load_SanPham({Key? key}) : super(key: key);
 
   @override
   State<Load_SanPham> createState() => _Load_SanPhamState();
@@ -30,54 +30,57 @@ class _Load_SanPhamState extends State<Load_SanPham> {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 5,
-        ),
-        itemCount: _listSanPham.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () {
-              setState(() {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>  chiTietSp_Screen(sanPham: _listSanPham[index],)),
-                );
-              });
-            },
-            child: Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Image.network(
-                   _listSanPham[index].Hinh,
-                    fit: BoxFit.contain,
-                    width: MediaQuery.of(context).size.width / 1,
-                    height: MediaQuery.of(context).size.width / 4,
-                  ),
-                  Container(
-                    child: Text(
-                      _listSanPham[index].Ten,
-                      softWrap: true,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    _listSanPham[index].ThongSo,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 5,
+      ),
+      itemCount: _listSanPham.length,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => chiTietSp_Screen(
+                          sanPham: _listSanPham[index],
+                        )),
+              );
+            });
+          },
+          child: Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.network(
+                  _listSanPham[index].Hinh,
+                  fit: BoxFit.contain,
+                  width: MediaQuery.of(context).size.width / 1,
+                  height: MediaQuery.of(context).size.width / 4,
+                ),
+                Container(
+                  child: Text(
+                    _listSanPham[index].Ten,
+                    softWrap: true,
                     style: const TextStyle(
-                      color: Colors.grey,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(_listSanPham[index].Gia.toString())
-                ],
-              ),
+                ),
+                Text(
+                  _listSanPham[index].ThongSo,
+                  style: const TextStyle(
+                    color: Colors.grey,
+                  ),
+                ),
+                Text(_listSanPham[index].Gia.toString())
+              ],
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 }

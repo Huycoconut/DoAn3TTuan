@@ -27,7 +27,7 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
     super.initState();
     _chiTietSp = widget.sanPham;
   }
-
+//Hàm thêm sản phẩm
   void _ThemVaMua() {
     SanPham currentProduct = SanPham(
       Id: _chiTietSp!.Id,
@@ -44,6 +44,7 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
     );
     cartItems.add(currentProduct);
     payItems.add(currentProduct);
+    _addToCart(currentProduct);
   }
 
 //Thêm sản phẩm vào giỏ hàng
@@ -58,33 +59,29 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
     });
   }
 
+  //
+  void _addToCart(SanPham sanPham) {
+    bool isAlreadyInCart = cartItems.any((item) => item.Id == sanPham.Id);
+    if (!isAlreadyInCart) {
+      GioHang.ThemSpVaoGio(sanPham);
+      _loadCartItems();
+    } else {
+      // Hiển thị thông báo rằng sản phẩm đã có trong giỏ hàng
+    }
+  }
+
+  void _loadCartItems() {
+    setState(() {
+      cartItems = GioHang.HienSpTrongGio();
+    });
+  }
+
 //Cập nhật màu được chọn
   bool _isFirstSelected = false;
   bool _isSecondSelected = true;
   bool _isThirdSelected = true;
 
-  int currentTrangThai = 0;
-
-  void updateTrangThai(int index, int trangThai) {
-    DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
-    DatabaseReference sanPhamReference = databaseReference
-        .child('SanPham')
-        .child(index.toString())
-        .child('MauSac/$index');
-    int newTrangThai = (trangThai == 0) ? 1 : 0;
-
-    sanPhamReference.update({'TrangThai': newTrangThai}).then((value) {
-      print('Cập nhật giá trị thành công cho index $index.');
-    }).catchError((error) {
-      print('Có lỗi xảy ra khi cập nhật giá trị cho index $index: $error');
-    });
-  }
-
-  List<Map<String, dynamic>> indexList = [
-    {'index': 0, 'TrangThai': 0},
-    {'index': 1, 'TrangThai': 0},
-    {'index': 2, 'TrangThai': 0},
-  ];
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -221,12 +218,6 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                                           _isSecondSelected = true;
                                           _isThirdSelected = true;
 
-                                          indexList[0]['TrangThai'] =
-                                              (indexList[0]['TrangThai'] == 0)
-                                                  ? 1
-                                                  : 0;
-                                          updateTrangThai(indexList[0]['index'],
-                                              indexList[0]['TrangThai']);
                                         });
                                       },
                                     ),
@@ -244,15 +235,7 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                                           _isSecondSelected =
                                               !_isSecondSelected;
                                           _isThirdSelected = true;
-                                          currentTrangThai =
-                                              (currentTrangThai == 0) ? 1 : 0;
-
-                                          indexList[1]['TrangThai'] =
-                                              (indexList[1]['TrangThai'] == 0)
-                                                  ? 1
-                                                  : 0;
-                                          updateTrangThai(indexList[0]['index'],
-                                              indexList[1]['TrangThai']);
+                              
                                         });
                                       },
                                     ),
@@ -270,15 +253,7 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                                           _isThirdSelected = !_isThirdSelected;
                                           _isFirstSelected = true;
                                           _isSecondSelected = true;
-                                          currentTrangThai =
-                                              (currentTrangThai == 0) ? 1 : 0;
-
-                                          indexList[2]['TrangThai'] =
-                                              (indexList[2]['TrangThai'] == 0)
-                                                  ? 1
-                                                  : 0;
-                                          updateTrangThai(indexList[0]['index'],
-                                              indexList[2]['TrangThai']);
+                                   
                                         });
                                       },
                                     ),
@@ -350,6 +325,7 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                                                 BorderRadius.circular(5))),
                                     onPressed: () {
                                       _ThemVaMua();
+                            
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(

@@ -1,4 +1,7 @@
+import 'package:appbanhang_gearchina/View/ChiTietSanPham/ChiTietSp_Screen.dart';
+import 'package:appbanhang_gearchina/View/SanPham/data_SanPham.dart';
 import 'package:appbanhang_gearchina/View/SanPham/load_SanPham.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class sanPham_screen extends StatefulWidget {
@@ -9,6 +12,23 @@ class sanPham_screen extends StatefulWidget {
 }
 
 class _sanPham_screenState extends State<sanPham_screen> {
+  SortType _currentSortType = SortType.All;
+  final dbref = FirebaseDatabase.instance.ref().child('SanPham');
+
+  List<SanPham> _listSanPham = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    dbref.onValue.listen((event) {
+      setState(() {
+        _listSanPham = event.snapshot.children.map((snapshot) {
+          return SanPham.fromSnapshot(snapshot);
+        }).toList();
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,10 +40,7 @@ class _sanPham_screenState extends State<sanPham_screen> {
           Row(
             children: [
               IconButton(
-                onPressed: () {
-                 
-
-                },
+                onPressed: () {},
                 icon: const Icon(Icons.arrow_back_ios_rounded),
               ),
               const SizedBox(
@@ -71,7 +88,13 @@ class _sanPham_screenState extends State<sanPham_screen> {
                   style: ButtonStyle(
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)))),
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {
+                      _currentSortType = SortType.All;
+                      // Sắp xếp danh sách sản phẩm theo thứ tự ban đầu
+                      _listSanPham.sort((a, b) => a.Id.compareTo(b.Id));
+                    });
+                  },
                   child: const Text(
                     "Tất cả",
                     style: TextStyle(color: Colors.grey),
@@ -81,7 +104,13 @@ class _sanPham_screenState extends State<sanPham_screen> {
                   style: ButtonStyle(
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)))),
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {
+                      _currentSortType = SortType.Highest;
+                      // Sắp xếp danh sách sản phẩm theo giá cao nhất
+                      _listSanPham.sort((a, b) => b.Gia.compareTo(a.Gia));
+                    });
+                  },
                   child: const Text(
                     "Cao nhất",
                     style: TextStyle(color: Colors.grey),
@@ -91,7 +120,13 @@ class _sanPham_screenState extends State<sanPham_screen> {
                   style: ButtonStyle(
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)))),
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {
+                      _currentSortType = SortType.Lowest;
+                      // Sắp xếp danh sách sản phẩm theo giá thấp nhất
+                      _listSanPham.sort((a, b) => a.Gia.compareTo(b.Gia));
+                    });
+                  },
                   child: const Text(
                     "Thấp nhất",
                     style: TextStyle(color: Colors.grey),
@@ -101,10 +136,68 @@ class _sanPham_screenState extends State<sanPham_screen> {
             ),
           ),
           Expanded(
-            child: Load_SanPham(),
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 5,
+              ),
+              itemCount: _listSanPham.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => chiTietSp_Screen(
+                                  sanPham: _listSanPham[index],
+                                )),
+                      );
+                    });
+                  },
+                  child: Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Image.network(
+                          _listSanPham[index].Hinh,
+                          fit: BoxFit.contain,
+                          width: MediaQuery.of(context).size.width / 1,
+                          height: MediaQuery.of(context).size.width / 4,
+                        ),
+                        Container(
+                          child: Text(
+                            _listSanPham[index].Ten,
+                            softWrap: true,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          _listSanPham[index].ThongSo,
+                          style: const TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Text(_listSanPham[index].Gia.toString())
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
           )
         ],
       ),
     );
   }
+}
+
+enum SortType {
+  All,
+  Highest,
+  Lowest,
 }

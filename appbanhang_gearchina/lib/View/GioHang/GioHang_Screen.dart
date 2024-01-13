@@ -13,7 +13,10 @@ class gioHang_Screen extends StatefulWidget {
 }
 
 class _gioHang_ScreenState extends State<gioHang_Screen> {
-  List<SanPham> cartItems = [];
+  //List<SanPham> cartItems = [];
+  List<SanPham> selectedItems = [];
+  List<SanPham> cartItems = CartItems.cartItems;
+  bool _isButtonEnabled = false;
 
   @override
   void initState() {
@@ -27,16 +30,13 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
     });
   }
 
-  void _addToCart(SanPham sanPham) {
-    GioHang.ThemSpVaoGio(sanPham);
-    // Hiển thị thông báo thành công hoặc cập nhật giao diện
-  }
-
-  bool check = false;
+  final bool _check = false;
 
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
+    _isButtonEnabled = selectedItems.isNotEmpty;
+
     return Scaffold(
       body: Column(
         children: [
@@ -74,27 +74,70 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
               itemBuilder: (context, index) {
                 final sanPham = widget.cartItems[index];
                 return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Column(
-                            children: [
-                              Image.network(
-                                sanPham.Hinh,
-                                width: media.width / 3,
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Text(sanPham.Ten),
-                              Text(sanPham.SoLuong.toString())
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
+                  child: Container(
+                    margin: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 1),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: selectedItems.contains(sanPham),
+                              onChanged: (value) {
+                                setState(() {
+                                  if (value!) {
+                                    selectedItems.add(sanPham);
+                                  } else {
+                                    selectedItems.remove(sanPham);
+                                  }
+                                });
+                              },
+                            ),
+                            Column(
+                              children: [
+                                Image.network(
+                                  sanPham.Hinh,
+                                  width: media.width / 3.5,
+                                ),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  sanPham.Ten,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text("Số lượng: ${sanPham.SoLuong}"),
+                                const Text("Màu: xanh"),
+                                Row(
+                                  children: [
+                                    const Text(
+                                      "₫2000000 ",
+                                      style: TextStyle(
+                                        decoration: TextDecoration.lineThrough,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                    Text(
+                                      sanPham.Gia.toString(),
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.redAccent),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -109,14 +152,17 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>  thanhToan_Screen(payItems: cartItems),
-                ),
-              );
-            },
+            onPressed: _isButtonEnabled
+                ? () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            thanhToan_Screen(payItems: selectedItems),
+                      ),
+                    );
+                  }
+                : null,
             child: const Text(
               "Thanh toán",
               style: TextStyle(color: Colors.white, fontSize: 17),

@@ -29,3 +29,6 @@ class CRUD_GioHang {
     _cartItems.clear();
   }
 }
+class CartItems {
+  static List<SanPham> cartItems = [];
+}

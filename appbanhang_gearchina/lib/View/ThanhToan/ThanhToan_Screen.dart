@@ -2,42 +2,51 @@ import 'package:appbanhang_gearchina/View/GioHang/class_LuuTruSp_TrongGio.dart';
 import 'package:appbanhang_gearchina/View/SanPham/data_SanPham.dart';
 import 'package:appbanhang_gearchina/View/ThanhToan/SpThanhToan.dart';
 import 'package:appbanhang_gearchina/View/GioHang/SpTrongGio.dart';
+import 'package:appbanhang_gearchina/View/ThanhToan/SuaDiaChi_Screen.dart';
 import 'package:flutter/material.dart';
 
 class thanhToan_Screen extends StatefulWidget {
-   thanhToan_Screen({super.key,required this.payItems});
-    final List<SanPham> payItems;
-
+  const thanhToan_Screen({super.key, required this.payItems});
+  final List<SanPham> payItems;
 
   @override
   State<thanhToan_Screen> createState() => _thanhToan_ScreenState();
 }
 
 class _thanhToan_ScreenState extends State<thanhToan_Screen> {
+  List<SanPham> cartItems = [];
+  //Check thanh toán
+  bool _isPress = false;
+  //Giá tiền
+  double _TongTien = 0;
 
-    List<SanPham> cartItems = [];
-
-    @override
+  @override
   void initState() {
     super.initState();
     _loadCartItems();
+    _tinhTongTien();
   }
-
+//load sản phẩm trong lên màn hình 
   void _loadCartItems() {
     setState(() {
       cartItems = GioHang.HienSpTrongGio();
     });
   }
-
-  void _addToCart(SanPham sanPham) {
-    GioHang.ThemSpVaoGio(sanPham);
-    // Hiển thị thông báo thành công hoặc cập nhật giao diện
+//Tính tổng tiền
+  void _tinhTongTien() {
+    double TongTien = 0;
+    for (var sanPham in widget.payItems) {
+      TongTien +=
+          sanPham.SoLuong == 1 ? sanPham.Gia : sanPham.Gia * sanPham.SoLuong;
+    }
+    setState(() {
+      _TongTien = TongTien;
+    });
   }
-
 
   @override
   Widget build(BuildContext context) {
-        var media = MediaQuery.of(context).size;
+    var media = MediaQuery.of(context).size;
 
     return Scaffold(
       body: Column(
@@ -51,7 +60,9 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pop(context);
+                },
                 icon: const Icon(
                   Icons.arrow_back_ios_new,
                 ),
@@ -68,7 +79,7 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
               ),
             ],
           ),
-          Container(  
+          Container(
             padding: const EdgeInsets.only(left: 23),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -79,14 +90,20 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
                   children: [
                     const Text(
                       "Địa chỉ nhận hàng",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 15),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                     ),
                     const SizedBox(
                       width: 100,
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const suaDiaChi_Screen()));
+                      },
                       child: const Text(
                         "Sửa",
                         style: TextStyle(color: Colors.grey),
@@ -117,38 +134,65 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
             ),
           ),
-           Expanded(
-          child: ListView.builder(
-            itemCount: widget.payItems.length,
-            itemBuilder: (context, index) {
-              final sanPham = widget.payItems[index];
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Row(
+          Expanded(
+            child: ListView.builder(
+              itemCount: widget.payItems.length,
+              itemBuilder: (context, index) {
+                final sanPham = widget.payItems[index];
+                return SingleChildScrollView(
+                  child: Container(
+                    margin: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 1),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Column(
                       children: [
-                        Column(
+                        Row(
                           children: [
-                            Image.network(
-                              sanPham.Hinh,
-                              width: media.width / 3,
+                            Column(
+                              children: [
+                                Image.network(
+                                  sanPham.Hinh,
+                                  width: media.width / 3.5,
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Text(sanPham.Ten),
-                            Text(sanPham.SoLuong.toString())
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Text(
+                                  sanPham.Ten,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const Text("Màu: xanh"),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "₫${sanPham.SoLuong == 1 ? sanPham.Gia : sanPham.Gia + sanPham.Gia}",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.redAccent),
+                                    ),
+                                    const SizedBox(
+                                      width: 150,
+                                    ),
+                                    Text("x${sanPham.SoLuong}")
+                                  ],
+                                )
+                              ],
+                            ),
                           ],
                         ),
                       ],
                     ),
-                  ],
-                ),
-              );
-            },
+                  ),
+                );
+              },
+            ),
           ),
-        ),
           const SizedBox(
             height: 20,
           ),
@@ -165,25 +209,30 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
             child: Column(
               children: [
                 GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _isPress = !_isPress;
+                    });
+                  },
                   child: Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                         border: Border.all(width: 1),
                         borderRadius: BorderRadius.circular(5)),
-                    child: const Row(
+                    child: Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.payments_outlined,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                         ),
-                        Text("Thanh toán khi nhận hàng"),
-                        SizedBox(
+                        const Text("Thanh toán khi nhận hàng"),
+                        const SizedBox(
                           width: 70,
                         ),
                         Icon(
-                          Icons.check_circle,
+                          _isPress == true ? Icons.check_circle : null,
                           color: Colors.red,
                           size: 15,
                         )
@@ -212,11 +261,6 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
                         SizedBox(
                           width: 40,
                         ),
-                        Icon(
-                          Icons.check_circle,
-                          color: Colors.red,
-                          size: 15,
-                        )
                       ],
                     ),
                   ),
@@ -225,18 +269,19 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
             ),
           ),
           Container(
-            margin: const EdgeInsets.only(
-                left: 10, right: 10, bottom: 20, top: 15),
-            child: const Row(
+            margin:
+                const EdgeInsets.only(left: 10, right: 10, bottom: 20, top: 15),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'Tổng thanh toán',
                   style: TextStyle(fontSize: 15, color: Colors.grey),
                 ),
                 Text(
-                  '14.000.000',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  '$_TongTien',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 20),
                 ),
               ],
             ),

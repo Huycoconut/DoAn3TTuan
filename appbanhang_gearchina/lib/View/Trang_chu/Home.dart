@@ -1,5 +1,3 @@
-
-
 import 'package:appbanhang_gearchina/View/SanPham/load_SanPham.dart';
 import 'package:appbanhang_gearchina/View/Trang_chu/botNav.dart';
 import 'package:flutter/material.dart';
@@ -12,19 +10,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  
   @override
   Widget build(BuildContext context) {
+    return  Load_SanPham();
 
-    return Load_SanPham();
-    
     // return Scaffold(
-      
-      
-      
+
     //   bottomNavigationBar: bottomNav(),
 
-       
     //   body:  Column(children: [
     //     Row(
     //       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -36,19 +29,10 @@ class _HomeScreenState extends State<HomeScreen> {
     //             // IconButton(onPressed: (){}, icon: Icon(Icons.phone_android)),
     //       ],
     //     ),
-        
-       
-        
-           
+
     //       ],
     //     ),
-        
+
     // );
-
-      
-         
   }
- 
 }
-
-
