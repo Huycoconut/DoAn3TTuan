@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "499101401392-4h5cefb4vh6drgbj5qrd23odptp493lh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.appbanhang_gearchina",
+            "certificate_hash": "01420e9a306d0936d579612936ab35416b3057f4"
+          }
+        },
+        {
           "client_id": "499101401392-djgorgjl7eorio05kguh0h49ia19hmce.apps.googleusercontent.com",
           "client_type": 3
         }

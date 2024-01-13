@@ -19,11 +19,14 @@ class _Load_SanPhamState extends State<Load_SanPham> {
   void initState() {
     // TODO: implement initState
     dbref.onValue.listen((event) {
-      setState(() {
-        _listSanPham = event.snapshot.children.map((snapshot) {
-          return SanPham.fromSnapshot(snapshot);
-        }).toList();
-      });
+      //Khoa : them kiem tra mounted de khong bi xung dot khi dang nhap
+      if(this.mounted){
+        setState(() {
+          _listSanPham = event.snapshot.children.map((snapshot) {
+            return SanPham.fromSnapshot(snapshot);
+          }).toList();
+        });
+      }
     });
   }
 

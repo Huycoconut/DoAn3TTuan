@@ -1,4 +1,5 @@
 import 'package:appbanhang_gearchina/View/Trang_chu/Home.dart';
+import 'package:appbanhang_gearchina/View/Trang_chu/botNav.dart';
 import 'package:flutter/material.dart';
 import 'package:appbanhang_gearchina/View/QuanLyTaiKhoan/account_st.dart';
 import 'package:appbanhang_gearchina/View/DangNhap_DangKy/register.dart';
@@ -29,7 +30,7 @@ class _LoginState extends State<Login> {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: taikhoan.text, password: matkhau.text);
           // sửa đường dẫn về trang chủ
-      Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => bottomNav()));
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
       wrongLogin(e.code);
@@ -59,14 +60,13 @@ class _LoginState extends State<Login> {
   
   Future<UserCredential?> signInWithGoogle() async {
     try{
-
-    
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+      Navigator.push(context, MaterialPageRoute(builder: (context) => bottomNav()));
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+    );  
     
     // Once signed in, return the UserCredential
     return await FirebaseAuth.instance.signInWithCredential(credential);
