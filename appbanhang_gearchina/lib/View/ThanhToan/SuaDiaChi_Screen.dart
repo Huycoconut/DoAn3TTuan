@@ -81,7 +81,7 @@ class _suaDiaChi_ScreenState extends State<suaDiaChi_Screen> {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return const LogoutDialog();
+                    return  LogoutDialog();
                   },
                 );
               },

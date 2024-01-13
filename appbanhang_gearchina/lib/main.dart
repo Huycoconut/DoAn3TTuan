@@ -34,11 +34,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-<<<<<<< HEAD
-      home:  sanPham_screen(),
-=======
-      home: Login(),
->>>>>>> ce289b26b5d8e147bee4b27c49603e25ff11ae49
+      home: const sanPham_screen(),
       debugShowCheckedModeBanner: false,
     );
   }

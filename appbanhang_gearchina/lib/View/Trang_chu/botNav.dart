@@ -23,7 +23,7 @@ class _bottomNavState extends State<bottomNav> {
         backgroundColor: const Color.fromRGBO(56, 60, 160, 20),
         automaticallyImplyLeading: false,
         actions: [
-<<<<<<< HEAD
+
           IconButton(onPressed: (){
             // showSearch(
             //   context: context, 
@@ -38,8 +38,7 @@ class _bottomNavState extends State<bottomNav> {
             
           }, icon: const Icon(Icons.shopping_bag),color: Colors.white),
           
-          
-=======
+
           IconButton(
             onPressed: () {
               // showSearch(
@@ -63,7 +62,6 @@ class _bottomNavState extends State<bottomNav> {
               },
               icon: const Icon(Icons.shopping_bag),
               color: Colors.white),
->>>>>>> ce289b26b5d8e147bee4b27c49603e25ff11ae49
         ],
       ),
       body: tabs[_currentIndex],
