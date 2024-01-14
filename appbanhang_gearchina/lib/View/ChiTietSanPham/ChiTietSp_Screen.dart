@@ -20,6 +20,10 @@ class chiTietSp_Screen extends StatefulWidget {
 
 class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
   final dbref = FirebaseDatabase.instance.ref().child('SanPham');
+  //Thêm sản phẩm vào giỏ hàng
+  List<SanPham> cartItems = [];
+//Mua sản phẩm
+  List<SanPham> payItems = [];
 
   SanPham? _chiTietSp;
   @override
@@ -27,39 +31,44 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
     super.initState();
     _chiTietSp = widget.sanPham;
   }
-//Hàm thêm sản phẩm
+
   void _ThemVaMua() {
-    SanPham currentProduct = SanPham(
-      Id: _chiTietSp!.Id,
-      Ten: _chiTietSp!.Ten,
-      SoLuong: _chiTietSp!.SoLuong,
-      Gia: _chiTietSp!.Gia,
-      Hinh: _chiTietSp!.Hinh,
-      Loai: _chiTietSp!.Loai,
-      Mau: _chiTietSp!.Mau,
-      MauSac: _chiTietSp!.MauSac,
-      MoTa: _chiTietSp!.MoTa,
-      ThongSo: _chiTietSp!.ThongSo,
-      TrangThai: _chiTietSp!.TrangThai,
-    );
-    cartItems.add(currentProduct);
-    payItems.add(currentProduct);
-    _addToCart(currentProduct);
-  }
+    // Kiểm tra xem sản phẩm đã được thêm vào giỏ hàng chưa
+    bool isProductAdded =
+        cartItems.any((product) => product.Id == _chiTietSp!.Id);
 
-//Thêm sản phẩm vào giỏ hàng
-  List<SanPham> cartItems = [];
-//Mua sản phẩm
-  List<SanPham> payItems = [];
-//Cập nhật số lượng sản phẩm
-  void _updateData(int index, int newSoLuong) async {
-    final DatabaseReference ref = dbref.child(index.toString());
-    await ref.update({
-      'SoLuong': newSoLuong,
-    });
-  }
+    if (!isProductAdded) {
+      // Tạo đối tượng SanPham từ thông tin chi tiết sản phẩm
+      SanPham currentProduct = SanPham(
+        Id: _chiTietSp!.Id,
+        Ten: _chiTietSp!.Ten,
+        SoLuong: _chiTietSp!.SoLuong,
+        Gia: _chiTietSp!.Gia,
+        Hinh: _chiTietSp!.Hinh,
+        Loai: _chiTietSp!.Loai,
+        Mau: _chiTietSp!.Mau,
+        MauSac: _chiTietSp!.MauSac,
+        MoTa: _chiTietSp!.MoTa,
+        ThongSo: _chiTietSp!.ThongSo,
+        TrangThai: _chiTietSp!.TrangThai,
+      );
 
-  //
+      // Thêm sản phẩm vào giỏ hàng và thanh toán
+      cartItems.add(currentProduct);
+      payItems.add(currentProduct);
+      _addToCart(currentProduct);
+    } else {
+      // Sản phẩm đã tồn tại trong giỏ hàng, cập nhật số lượng
+      int index =
+          cartItems.indexWhere((product) => product.Id == _chiTietSp!.Id);
+      if (index != -1) {
+        cartItems[index].SoLuong = _chiTietSp!.SoLuong;
+        payItems[index].SoLuong = _chiTietSp!.SoLuong;
+      }
+    }
+  }
+//Thêm sản phẩm vào giỏ
+
   void _addToCart(SanPham sanPham) {
     bool isAlreadyInCart = cartItems.any((item) => item.Id == sanPham.Id);
     if (!isAlreadyInCart) {
@@ -70,6 +79,15 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
     }
   }
 
+//Cập nhật số lượng sản phẩm
+  void _updateData(int index, int newSoLuong) async {
+    final DatabaseReference ref = dbref.child(index.toString());
+    await ref.update({
+      'SoLuong': newSoLuong,
+    });
+  }
+
+//Load sản phẩm
   void _loadCartItems() {
     setState(() {
       cartItems = GioHang.HienSpTrongGio();
@@ -77,11 +95,9 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
   }
 
 //Cập nhật màu được chọn
+  bool _isThirdSelected = true;
   bool _isFirstSelected = false;
   bool _isSecondSelected = true;
-  bool _isThirdSelected = true;
-
- 
 
   @override
   Widget build(BuildContext context) {
@@ -183,6 +199,29 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                               ],
                             ),
                             //Màu sắc sản phẩm
+
+                            Container(
+                              margin: const EdgeInsets.only(left: 25, top: 15),
+                              child: const Text(
+                                "Chi tiết",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(
+                                  left: 25, top: 5, right: 10),
+                              child: Text(
+                                _chiTietSp?.MoTa ?? "",
+                                softWrap: true,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
                             Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -217,7 +256,6 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                                           _isFirstSelected = !_isFirstSelected;
                                           _isSecondSelected = true;
                                           _isThirdSelected = true;
-
                                         });
                                       },
                                     ),
@@ -235,7 +273,6 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                                           _isSecondSelected =
                                               !_isSecondSelected;
                                           _isThirdSelected = true;
-                              
                                         });
                                       },
                                     ),
@@ -253,7 +290,6 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                                           _isThirdSelected = !_isThirdSelected;
                                           _isFirstSelected = true;
                                           _isSecondSelected = true;
-                                   
                                         });
                                       },
                                     ),
@@ -261,30 +297,8 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                                 )
                               ],
                             ),
-                            Container(
-                              margin: const EdgeInsets.only(left: 25, top: 15),
-                              child: const Text(
-                                "Chi tiết",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(
-                                  left: 25, top: 5, right: 10),
-                              child: Text(
-                                _chiTietSp?.MoTa ?? "",
-                                softWrap: true,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: 15,
-                                ),
-                              ),
-                            ),
                             const SizedBox(
-                              height: 50,
+                              height: 20,
                             ),
                             //Giỏ hàng
                             Container(
@@ -325,7 +339,7 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                                                 BorderRadius.circular(5))),
                                     onPressed: () {
                                       _ThemVaMua();
-                            
+
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(

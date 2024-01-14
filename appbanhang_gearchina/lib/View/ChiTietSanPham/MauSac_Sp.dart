@@ -4,32 +4,24 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 
 class MauSac_Sp extends StatefulWidget {
-  const MauSac_Sp({super.key,required this.sanPham});
-final MauSac_SanPham sanPham;
+  const MauSac_Sp({super.key});
+
   @override
   State<MauSac_Sp> createState() => _MauSac_SpState();
 }
 
 class _MauSac_SpState extends State<MauSac_Sp> {
- final dbref = FirebaseDatabase.instance.ref().child('MauSac');
-   List<Map<dynamic, dynamic>> mauSacData = [];
-
-  MauSac_SanPham? _chiTietSp;
-  @override
-  void initState() {
-    super.initState();
-    _chiTietSp = widget.sanPham;
-
+  void updateButtonState(int index, int newState) {
+    DatabaseReference databaseReference =
+        FirebaseDatabase.instance.ref().child('SanPham/0/MauSac/$index');
+    databaseReference.update({'TrangThai': newState});
   }
 
-void _hienMauSac(){
-  
-}
+  void _hienMauSac() {}
 
-    bool _isFirstSelected = true;
+  bool _isFirstSelected = true;
   bool _isSecondSelected = false;
   bool _isThirdSelected = true;
-
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +29,7 @@ void _hienMauSac(){
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [Text(_chiTietSp?.TenMau),
+        children: [
           Container(
             margin: const EdgeInsets.only(left: 25, top: 15),
             child: const Text(
@@ -48,7 +40,6 @@ void _hienMauSac(){
               ),
             ),
           ),
-
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -66,7 +57,13 @@ void _hienMauSac(){
                     _isFirstSelected = !_isFirstSelected;
                     _isSecondSelected = true;
                     _isThirdSelected = true;
-              });
+                    updateButtonState(
+                        0, 1); // Cập nhật trạng thái của button màu xám thành 1
+                    updateButtonState(
+                        1, 0); // Cập nhật trạng thái của button màu đen thành 0
+                    updateButtonState(2,
+                        0); // Cập nhật trạng thái của button màu hồng thành 0
+                  });
                 },
               ),
               const SizedBox(width: 16),
@@ -80,6 +77,12 @@ void _hienMauSac(){
                     _isFirstSelected = true;
                     _isSecondSelected = !_isSecondSelected;
                     _isThirdSelected = true;
+                    updateButtonState(
+                        0, 0); // Cập nhật trạng thái của button màu xám thành 0
+                    updateButtonState(
+                        1, 1); // Cập nhật trạng thái của button màu đen thành 1
+                    updateButtonState(2,
+                        0); // Cập nhật trạng thái của button màu hồng thành 0
                   });
                 },
               ),
@@ -95,6 +98,12 @@ void _hienMauSac(){
                     _isThirdSelected = !_isThirdSelected;
                     _isFirstSelected = true;
                     _isSecondSelected = true;
+                    updateButtonState(
+                        0, 0); // Cập nhật trạng thái của button màu xám thành 0
+                    updateButtonState(
+                        1, 0); // Cập nhật trạng thái của button màu đen thành 0
+                    updateButtonState(2,
+                        1); // Cập nhật trạng thái của button màu hồng thành 1
                   });
                 },
               ),

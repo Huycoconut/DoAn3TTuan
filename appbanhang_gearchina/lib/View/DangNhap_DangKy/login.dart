@@ -29,8 +29,8 @@ class _LoginState extends State<Login> {
         setState(() {
           _errorMessage = 'Đăng nhập thành công.';
         });
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => bottomNav()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const bottomNav()));
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(_errorMessage),
@@ -50,7 +50,7 @@ class _LoginState extends State<Login> {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: Text("Quay lại"))
+                      child: const Text("Quay lại"))
                 ],
               );
             });
@@ -65,40 +65,41 @@ class _LoginState extends State<Login> {
       final GoogleSignInAuthentication googleAuth =
           await googleUser!.authentication;
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => bottomNav()));
+          context, MaterialPageRoute(builder: (context) => const bottomNav()));
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
       return await FirebaseAuth.instance.signInWithCredential(credential);
     } catch (e) {}
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        margin: EdgeInsets.fromLTRB(30, 80, 30, 30),
+        margin: const EdgeInsets.fromLTRB(30, 80, 30, 30),
         width: MediaQuery.of(context).size.width,
         alignment: Alignment.topLeft,
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 "Đăng Nhập",
                 style: TextStyle(fontSize: 35.0, fontWeight: FontWeight.bold),
               ),
               const Padding(padding: EdgeInsets.only(top: 15)),
 
-              Text(
+              const Text(
                 "Tên Tài Khoản",
                 style: TextStyle(fontSize: 20.0),
               ),
               const Padding(padding: EdgeInsets.only(top: 5)),
               //khung dn_taikhoan
               TextField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     prefixIcon: Icon(Icons.account_circle),
                     hintText: "Tên đăng nhập",
                     border: OutlineInputBorder(
@@ -110,7 +111,7 @@ class _LoginState extends State<Login> {
               ),
 
               const Padding(padding: EdgeInsets.only(top: 5)),
-              Text(
+              const Text(
                 "Mật Khẩu",
                 style: TextStyle(fontSize: 20.0),
               ),
@@ -120,9 +121,9 @@ class _LoginState extends State<Login> {
                 obscureText: widget.an,
                 keyboardType: TextInputType.visiblePassword,
                 decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.lock),
+                    prefixIcon: const Icon(Icons.lock),
                     hintText: "Mật Khẩu",
-                    border: OutlineInputBorder(
+                    border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                       borderSide:
                           BorderSide(color: Color.fromRGBO(56, 60, 160, 20)),
@@ -134,7 +135,7 @@ class _LoginState extends State<Login> {
                             setState(() {
                               widget.an = false;
                               widget.color_iconbtn =
-                                  Color.fromRGBO(56, 60, 160, 20);
+                                  const Color.fromRGBO(56, 60, 160, 20);
                             });
                           } else {
                             setState(() {
@@ -157,7 +158,7 @@ class _LoginState extends State<Login> {
                 children: [
                   TextButton(
                       onPressed: () {},
-                      child: Text(
+                      child: const Text(
                         "Quên mật khẩu?",
                         style: TextStyle(
                             fontSize: 16.0,
@@ -173,15 +174,15 @@ class _LoginState extends State<Login> {
                   SignIn();
                 },
                 style: ElevatedButton.styleFrom(
-                  minimumSize: Size(500, 60),
-                  primary: Color.fromRGBO(56, 60, 160, 20),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  minimumSize: const Size(500, 60),
+                  backgroundColor: const Color.fromRGBO(56, 60, 160, 20),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   'Đăng Nhập',
                   style: TextStyle(fontSize: 20.0, color: Colors.white),
                 ),
@@ -190,19 +191,21 @@ class _LoginState extends State<Login> {
               const Padding(padding: EdgeInsets.only(top: 20)),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Register()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const Register()));
                 },
                 style: ElevatedButton.styleFrom(
-                  minimumSize: Size(500, 60),
-                  primary: Color.fromRGBO(56, 60, 160, 20),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  minimumSize: const Size(500, 60),
+                  backgroundColor: const Color.fromRGBO(56, 60, 160, 20),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   'Đăng Ký',
                   style: TextStyle(fontSize: 20.0, color: Colors.white),
                 ),
@@ -213,7 +216,7 @@ class _LoginState extends State<Login> {
                   padding: EdgeInsets.only(
                 top: 30,
               )),
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
@@ -231,19 +234,19 @@ class _LoginState extends State<Login> {
                 onPressed: () {
                   signInWithGoogle();
                 },
-                icon: Icon(
+                icon: const Icon(
                   Icons.mail,
                   color: Colors.white,
                 ),
-                label: Text(
+                label: const Text(
                   'Đăng nhập với Google',
                   style: TextStyle(fontSize: 20.0, color: Colors.white),
                 ),
                 style: ElevatedButton.styleFrom(
-                  primary: Color.fromRGBO(56, 60, 160, 20),
-                  minimumSize: Size(500, 60),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  backgroundColor: const Color.fromRGBO(56, 60, 160, 20),
+                  minimumSize: const Size(500, 60),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),

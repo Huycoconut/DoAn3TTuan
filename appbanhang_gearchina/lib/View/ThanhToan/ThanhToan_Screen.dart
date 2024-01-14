@@ -26,12 +26,14 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
     _loadCartItems();
     _tinhTongTien();
   }
-//load sản phẩm trong lên màn hình 
+
+//load sản phẩm trong lên màn hình
   void _loadCartItems() {
     setState(() {
       cartItems = GioHang.HienSpTrongGio();
     });
   }
+
 //Tính tổng tiền
   void _tinhTongTien() {
     double TongTien = 0;
@@ -257,7 +259,7 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
                         SizedBox(
                           width: 20,
                         ),
-                        Text("Thanh toán qua thẻ ngân hàng"),
+                        Text("Thanh toán qua ngân hàng"),
                         SizedBox(
                           width: 40,
                         ),
@@ -279,9 +281,11 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
                   style: TextStyle(fontSize: 15, color: Colors.grey),
                 ),
                 Text(
-                  '$_TongTien',
+                  '₫$_TongTien',
                   style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 20),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: Colors.redAccent),
                 ),
               ],
             ),

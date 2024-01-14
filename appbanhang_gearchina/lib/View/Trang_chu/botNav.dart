@@ -15,7 +15,7 @@ class bottomNav extends StatefulWidget {
 class _bottomNavState extends State<bottomNav> {
   int _currentIndex = 0;
   // thêm trang thông báo và cá nhân vào danh sách tabs để chuyển trang
-  final tabs = [HomeScreen(), const NotiScreen(), QuanLytaiKhoan()];
+  final tabs = [const HomeScreen(), const NotiScreen(), const QuanLytaiKhoan()];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,30 +23,16 @@ class _bottomNavState extends State<bottomNav> {
         backgroundColor: const Color.fromRGBO(56, 60, 160, 20),
         automaticallyImplyLeading: false,
         actions: [
-
-          IconButton(onPressed: (){
-            // showSearch(
-            //   context: context, 
-            //   delegate: CustomSearch()
-            // );
-             Navigator.push(context, MaterialPageRoute(builder: (context) => sanPham_screen()));
-
-          }, icon: const Icon(Icons.search), color: Colors.white,),
-         
-          IconButton(onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => gioHang_Screen(cartItems: [],)));
-            
-          }, icon: const Icon(Icons.shopping_bag),color: Colors.white),
-          
-
           IconButton(
             onPressed: () {
               // showSearch(
               //   context: context,
               //   delegate: CustomSearch()
               // );
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => sanPham_screen()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>  sanPham_screen()));
             },
             icon: const Icon(Icons.search),
             color: Colors.white,
@@ -56,7 +42,7 @@ class _bottomNavState extends State<bottomNav> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => gioHang_Screen(
+                        builder: (context) => const gioHang_Screen(
                               cartItems: [],
                             )));
               },

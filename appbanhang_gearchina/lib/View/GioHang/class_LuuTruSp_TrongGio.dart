@@ -1,3 +1,4 @@
+import 'package:appbanhang_gearchina/View/ChiTietSanPham/MauSac_Sp.dart';
 import 'package:appbanhang_gearchina/View/SanPham/data_SanPham.dart';
 
 class GioHang {
@@ -32,3 +33,6 @@ class CRUD_GioHang {
 class CartItems {
   static List<SanPham> cartItems = [];
 }
+/* class color_CartItems {
+  static List<MauSac_SanPham> Color_cartItems = [];
+} */
