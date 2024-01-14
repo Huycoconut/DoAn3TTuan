@@ -22,11 +22,28 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
   void initState() {
     super.initState();
     _loadCartItems();
+    _loadCartItems_TrongGio();
   }
 
   void _loadCartItems() {
     setState(() {
       cartItems = GioHang.HienSpTrongGio();
+    });
+  }
+
+  //Load sản phẩm
+  void _loadCartItems_TrongGio() {
+    Cart cart = Cart();
+    setState(() {
+      cartItems = cart.cartItems;
+    });
+  }
+
+  //Xóa sản phẩm
+  void _removeItemFromCart(int index) {
+    setState(() {
+      widget.cartItems.removeAt(index);
+      _loadCartItems(); // Cập nhật lại giao diện giỏ hàng
     });
   }
 
@@ -75,18 +92,24 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
                 final sanPham = widget.cartItems[index];
                 return SingleChildScrollView(
                   child: Container(
-                    margin: const EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 1),
-                      borderRadius: BorderRadius.circular(5),
+                    margin: const EdgeInsets.only(bottom: 15),
+                    padding: const EdgeInsets.only(bottom: 15),
+                    decoration: const BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(
+                        width: 1,
+                        color: Colors.grey,
+                      )),
                     ),
                     child: Column(
                       children: [
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Checkbox(
                               value: selectedItems.contains(sanPham),
                               onChanged: (value) {
+                                //Kiểm tra nếu check sản phẩm
                                 setState(() {
                                   if (value!) {
                                     selectedItems.add(sanPham);
@@ -100,7 +123,7 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
                               children: [
                                 Image.network(
                                   sanPham.Hinh,
-                                  width: media.width / 3.5,
+                                  width: media.width / 4.23,
                                 ),
                               ],
                             ),
@@ -134,6 +157,14 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
                                 )
                               ],
                             ),
+                            IconButton(
+                                onPressed: () {
+                                  _removeItemFromCart(index);
+                                },
+                                icon: const Icon(
+                                  Icons.restore_from_trash,
+                                  color: Colors.redAccent,
+                                ))
                           ],
                         ),
                       ],

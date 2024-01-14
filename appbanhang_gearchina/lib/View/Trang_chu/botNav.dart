@@ -1,6 +1,8 @@
 import 'package:appbanhang_gearchina/View/GioHang/GioHang_Screen.dart';
+import 'package:appbanhang_gearchina/View/GioHang/class_LuuTruSp_TrongGio.dart';
 import 'package:appbanhang_gearchina/View/QuanLyTaiKhoan/account_st.dart';
 import 'package:appbanhang_gearchina/View/SanPham/SanPham_screen.dart';
+import 'package:appbanhang_gearchina/View/SanPham/data_SanPham.dart';
 import 'package:appbanhang_gearchina/View/ThongBao/noti_screen.dart';
 import 'package:appbanhang_gearchina/View/Trang_chu/Home.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,22 @@ class bottomNav extends StatefulWidget {
 }
 
 class _bottomNavState extends State<bottomNav> {
+  List<SanPham> cartItems = [];
+  //Load sản phẩm
+  void _loadCartItems() {
+    Cart cart = Cart();
+    setState(() {
+      cartItems = cart.cartItems;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _loadCartItems();
+  }
+
   int _currentIndex = 0;
   // thêm trang thông báo và cá nhân vào danh sách tabs để chuyển trang
   final tabs = [const HomeScreen(), const NotiScreen(), const QuanLytaiKhoan()];
@@ -32,7 +50,7 @@ class _bottomNavState extends State<bottomNav> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>  sanPham_screen()));
+                      builder: (context) => const sanPham_screen()));
             },
             icon: const Icon(Icons.search),
             color: Colors.white,
@@ -42,8 +60,8 @@ class _bottomNavState extends State<bottomNav> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const gioHang_Screen(
-                              cartItems: [],
+                        builder: (context) => gioHang_Screen(
+                              cartItems: cartItems,
                             )));
               },
               icon: const Icon(Icons.shopping_bag),

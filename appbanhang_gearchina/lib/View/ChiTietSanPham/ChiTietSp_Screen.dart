@@ -30,6 +30,7 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
   void initState() {
     super.initState();
     _chiTietSp = widget.sanPham;
+    _loadCartItems();
   }
 
   void _ThemVaMua() {
@@ -67,12 +68,13 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
       }
     }
   }
-//Thêm sản phẩm vào giỏ
 
+//Thêm sản phẩm vào giỏ
   void _addToCart(SanPham sanPham) {
-    bool isAlreadyInCart = cartItems.any((item) => item.Id == sanPham.Id);
+    Cart cart = Cart();
+    bool isAlreadyInCart = cart.cartItems.any((item) => item.Id == sanPham.Id);
     if (!isAlreadyInCart) {
-      GioHang.ThemSpVaoGio(sanPham);
+      cart.cartItems.add(sanPham);
       _loadCartItems();
     } else {
       // Hiển thị thông báo rằng sản phẩm đã có trong giỏ hàng
@@ -89,8 +91,9 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
 
 //Load sản phẩm
   void _loadCartItems() {
+    Cart cart = Cart();
     setState(() {
-      cartItems = GioHang.HienSpTrongGio();
+      cartItems = cart.cartItems;
     });
   }
 

@@ -12,6 +12,7 @@ import 'package:appbanhang_gearchina/View/Trang_chu/Home.dart';
 import 'package:appbanhang_gearchina/View/Trang_chu/botNav.dart';
 import 'package:appbanhang_gearchina/firebase_options.dart';
 import 'package:appbanhang_gearchina/test.dart';
+import 'package:appbanhang_gearchina/test2.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: bottomNav(),
+      home: const bottomNav(),
       debugShowCheckedModeBanner: false,
     );
   }

@@ -33,6 +33,15 @@ class CRUD_GioHang {
 class CartItems {
   static List<SanPham> cartItems = [];
 }
-/* class color_CartItems {
-  static List<MauSac_SanPham> Color_cartItems = [];
-} */
+
+class Cart {
+  List<SanPham> cartItems = [];
+
+  static final Cart _instance = Cart._internal();
+
+  factory Cart() {
+    return _instance;
+  }
+
+  Cart._internal();
+}

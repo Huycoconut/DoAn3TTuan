@@ -16,7 +16,7 @@ class thanhToan_Screen extends StatefulWidget {
 class _thanhToan_ScreenState extends State<thanhToan_Screen> {
   List<SanPham> cartItems = [];
   //Check thanh toán
-  bool _isPress = false;
+  bool _isPress = true;
   //Giá tiền
   double _TongTien = 0;
 

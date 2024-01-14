@@ -148,6 +148,7 @@ class _sanPham_screenState extends State<sanPham_screen> {
                 return GestureDetector(
                   onTap: () {
                     setState(() {
+                      
                       Navigator.push(
                         context,
                         MaterialPageRoute(
