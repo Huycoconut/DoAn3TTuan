@@ -14,6 +14,7 @@ class thanhToan_Screen extends StatefulWidget {
 }
 
 class _thanhToan_ScreenState extends State<thanhToan_Screen> {
+  //tạo danh sách
   List<SanPham> cartItems = [];
   //Check thanh toán
   bool _isPress = true;
@@ -25,14 +26,29 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
     super.initState();
     _loadCartItems();
     _tinhTongTien();
+
   }
 
-//load sản phẩm trong lên màn hình
+  //Load sản phẩm
   void _loadCartItems() {
+    Cart cart = Cart();
     setState(() {
+      cartItems = cart.cartItems;
       cartItems = GioHang.HienSpTrongGio();
     });
   }
+// Xóa danh sách sản phẩm khi thoát khỏi màn hình sau khi quay về 
+  @override
+  void dispose() {
+    cartItems.clear();
+    super.dispose();
+  }
+//load sản phẩm trong lên màn hình
+/*   void _loadCartItems() {
+    setState(() {
+      cartItems = GioHang.HienSpTrongGio();
+    });
+  } */
 
 //Tính tổng tiền
   void _tinhTongTien() {

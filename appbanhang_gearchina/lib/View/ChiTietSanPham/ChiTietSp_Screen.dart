@@ -64,7 +64,7 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
           cartItems.indexWhere((product) => product.Id == _chiTietSp!.Id);
       if (index != -1) {
         cartItems[index].SoLuong = _chiTietSp!.SoLuong;
-        payItems[index].SoLuong = _chiTietSp!.SoLuong;
+       // payItems[index].SoLuong = _chiTietSp!.SoLuong;
       }
     }
   }
@@ -76,9 +76,7 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
     if (!isAlreadyInCart) {
       cart.cartItems.add(sanPham);
       _loadCartItems();
-    } else {
-      // Hiển thị thông báo rằng sản phẩm đã có trong giỏ hàng
-    }
+    } 
   }
 
 //Cập nhật số lượng sản phẩm
@@ -95,6 +93,12 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
     setState(() {
       cartItems = cart.cartItems;
     });
+
+     // Kiểm tra nếu danh sách sản phẩm trong giỏ hàng rỗng, thực hiện xóa
+  if (cartItems.isEmpty) {
+    cart.cartItems.clear();
+    payItems.clear();
+  }
   }
 
 //Cập nhật màu được chọn
@@ -119,9 +123,9 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                       flex: 1,
                       child: Image.network(
                         _chiTietSp?.Hinh ?? "",
-                        fit: BoxFit.cover,
+                        fit: BoxFit.fill,
                         width: media.width / 1,
-                        height: media.height / 2,
+                        height: media.height / 2.2,
                       ),
                     ),
                     Container(
