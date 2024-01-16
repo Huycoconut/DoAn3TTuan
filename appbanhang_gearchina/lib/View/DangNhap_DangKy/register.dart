@@ -95,21 +95,21 @@ class _RegisterState extends State<Register> {
                 style: TextStyle(fontSize: 35.0, fontWeight: FontWeight.bold),
               ),
               const Padding(padding: EdgeInsets.only(top: 10)),
-              //khung dk_taikhoan
+              //khung dk_email
               Text(
-                "Tên Tài Khoản",
+                "Email",
                 style: TextStyle(fontSize: 20.0),
               ),
               TextField(
                 decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.account_circle),
-                    hintText: "Tên đăng nhập",
+                    prefixIcon: Icon(Icons.email),
+                    hintText: "Email",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                       borderSide:
                           BorderSide(color: Color.fromRGBO(56, 60, 160, 20)),
                     )),
-                controller: tentaikhoan,
+                controller: email,
               ),
               //khung dk_matkhau
               Text(
@@ -127,22 +127,7 @@ class _RegisterState extends State<Register> {
                     )),
                 controller: matkhau,
               ),
-              //khung dk_email
-              Text(
-                "Email",
-                style: TextStyle(fontSize: 20.0),
-              ),
-              TextField(
-                decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.email),
-                    hintText: "Email",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      borderSide:
-                          BorderSide(color: Color.fromRGBO(56, 60, 160, 20)),
-                    )),
-                controller: email,
-              ),
+              
               //khung dk_nhaplaimatkhau
               Text(
                 "Nhập Lại Mật Khẩu",

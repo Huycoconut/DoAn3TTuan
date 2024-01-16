@@ -1,3 +1,4 @@
+import 'package:appbanhang_gearchina/View/QuanLyTaiKhoan/doiMK.dart';
 import 'package:flutter/material.dart';
 import 'package:appbanhang_gearchina/View/DangNhap_DangKy/login.dart';
 import 'package:appbanhang_gearchina/View/Trang_chu/botNav.dart';
@@ -45,15 +46,16 @@ class _QuanLytaiKhoanState extends State<QuanLytaiKhoan> {
                   )
                 ],
               ),
+              //khung dk_email
               const Text(
-                "Tên Tài Khoản",
+                "Email",
                 style: TextStyle(fontSize: 20.0),
               ),
               const TextField(
                 enabled: false,
                 decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.account_circle),
-                    hintText: "Tên đăng nhập",
+                    prefixIcon: Icon(Icons.email),
+                    hintText: "Email",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                       borderSide:
@@ -69,21 +71,6 @@ class _QuanLytaiKhoanState extends State<QuanLytaiKhoan> {
                 decoration: InputDecoration(
                     prefixIcon: Icon(Icons.person),
                     hintText: "Họ Tên",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      borderSide:
-                          BorderSide(color: Color.fromRGBO(56, 60, 160, 20)),
-                    )),
-              ),
-              //khung dk_email
-              const Text(
-                "Email",
-                style: TextStyle(fontSize: 20.0),
-              ),
-              const TextField(
-                decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.email),
-                    hintText: "Email",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                       borderSide:
@@ -119,6 +106,50 @@ class _QuanLytaiKhoanState extends State<QuanLytaiKhoan> {
                       borderSide:
                           BorderSide(color: Color.fromRGBO(56, 60, 160, 20)),
                     )),
+              ),
+              Padding(padding: EdgeInsets.only(top: 30)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      // đường dẫn đổi form mật khẩu
+                      Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => DoiMK()));
+                    },
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(180, 60),
+                      backgroundColor: const Color.fromRGBO(56, 60, 160, 20),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 8.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                    child: const Text(
+                      'Đổi Mật Khẩu',
+                      style: TextStyle(fontSize: 20.0, color: Colors.white),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      //xu ly chuc nang luu thong tin
+                    },
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(180, 60),
+                      backgroundColor: const Color.fromRGBO(56, 60, 160, 20),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 8.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                    child: const Text(
+                      'Lưu',
+                      style: TextStyle(fontSize: 20.0, color: Colors.white),
+                    ),
+                  ),
+                ],
               ),
               //quan ly don hang
               const Padding(padding: EdgeInsets.only(top: 30)),
