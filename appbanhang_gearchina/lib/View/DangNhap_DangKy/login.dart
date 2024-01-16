@@ -1,4 +1,5 @@
 import 'package:appbanhang_gearchina/View/DangNhap_DangKy/firebase_auth.dart';
+import 'package:appbanhang_gearchina/View/DangNhap_DangKy/quenMK.dart';
 import 'package:appbanhang_gearchina/View/Trang_chu/Home.dart';
 import 'package:appbanhang_gearchina/View/Trang_chu/botNav.dart';
 import 'package:flutter/material.dart';
@@ -93,7 +94,7 @@ class _LoginState extends State<Login> {
               const Padding(padding: EdgeInsets.only(top: 15)),
 
               const Text(
-                "Tên Tài Khoản",
+                "Email",
                 style: TextStyle(fontSize: 20.0),
               ),
               const Padding(padding: EdgeInsets.only(top: 5)),
@@ -101,7 +102,7 @@ class _LoginState extends State<Login> {
               TextField(
                 decoration: const InputDecoration(
                     prefixIcon: Icon(Icons.account_circle),
-                    hintText: "Tên đăng nhập",
+                    hintText: "Email",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                       borderSide:
@@ -157,7 +158,9 @@ class _LoginState extends State<Login> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) {return QuenMK();}));
+                      },
                       child: const Text(
                         "Quên mật khẩu?",
                         style: TextStyle(
