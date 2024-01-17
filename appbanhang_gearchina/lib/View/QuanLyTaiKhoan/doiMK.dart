@@ -1,5 +1,6 @@
 import 'package:appbanhang_gearchina/View/DangNhap_DangKy/login.dart';
 import 'package:appbanhang_gearchina/View/QuanLyTaiKhoan/account_st.dart';
+import 'package:appbanhang_gearchina/View/Trang_chu/botNav.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -79,20 +80,13 @@ class _DoiMKState extends State<DoiMK> {
       body: Container(
         margin: const EdgeInsets.fromLTRB(30, 80, 30, 30),
         width: MediaQuery.of(context).size.width,
-        alignment: Alignment.topLeft,
+        alignment: Alignment.center,
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              IconButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => QuanLytaiKhoan()));
-                  },
-                  icon: Icon(Icons.arrow_back_ios)
-              ),
               Text(
-                "Đổi Mât Khẩu",
+                "Đổi Mật Khẩu",
                 style: TextStyle(fontSize: 35.0, fontWeight: FontWeight.bold),
               ),
               const Padding(padding: EdgeInsets.only(top: 10)),

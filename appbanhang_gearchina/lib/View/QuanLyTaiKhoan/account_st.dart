@@ -24,15 +24,6 @@ class _QuanLytaiKhoanState extends State<QuanLytaiKhoan> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              IconButton(
-                  onPressed: () {
-                    // back ve trang chu
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const bottomNav()));
-                  },
-                  icon: const Icon(Icons.arrow_back_ios)),
               const Text(
                 "Quản Lý Tài Khoản",
                 style: TextStyle(fontSize: 35.0, fontWeight: FontWeight.bold),
@@ -118,7 +109,7 @@ class _QuanLytaiKhoanState extends State<QuanLytaiKhoan> {
                         MaterialPageRoute(builder: (context) => DoiMK()));
                     },
                     style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(180, 60),
+                      minimumSize: Size((MediaQuery.of(context).size.width) / 2.3, 60),
                       backgroundColor: const Color.fromRGBO(56, 60, 160, 20),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16.0, vertical: 8.0),
@@ -136,7 +127,7 @@ class _QuanLytaiKhoanState extends State<QuanLytaiKhoan> {
                       //xu ly chuc nang luu thong tin
                     },
                     style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(180, 60),
+                      minimumSize: Size((MediaQuery.of(context).size.width) / 2.3, 60),
                       backgroundColor: const Color.fromRGBO(56, 60, 160, 20),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16.0, vertical: 8.0),
