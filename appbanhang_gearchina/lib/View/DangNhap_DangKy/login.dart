@@ -159,7 +159,10 @@ class _LoginState extends State<Login> {
                 children: [
                   TextButton(
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) {return QuenMK();}));
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return QuenMK();
+                        }));
                       },
                       child: const Text(
                         "Quên mật khẩu?",
