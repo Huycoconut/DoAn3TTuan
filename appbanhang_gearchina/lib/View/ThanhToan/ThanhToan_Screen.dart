@@ -3,6 +3,8 @@ import 'package:appbanhang_gearchina/View/SanPham/data_SanPham.dart';
 import 'package:appbanhang_gearchina/View/ThanhToan/SpThanhToan.dart';
 import 'package:appbanhang_gearchina/View/GioHang/SpTrongGio.dart';
 import 'package:appbanhang_gearchina/View/ThanhToan/SuaDiaChi_Screen.dart';
+import 'package:appbanhang_gearchina/View/Trang_chu/botNav.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class thanhToan_Screen extends StatefulWidget {
@@ -26,7 +28,6 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
     super.initState();
     _loadCartItems();
     _tinhTongTien();
-
   }
 
   //Load sản phẩm
@@ -37,7 +38,8 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
       cartItems = GioHang.HienSpTrongGio();
     });
   }
-// Xóa danh sách sản phẩm khi thoát khỏi màn hình sau khi quay về 
+
+// Xóa danh sách sản phẩm khi thoát khỏi màn hình sau khi quay về
   @override
   void dispose() {
     cartItems.clear();
@@ -61,6 +63,89 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
       _TongTien = TongTien;
     });
   }
+
+  //
+  //Tạo hóa đơn
+  void _createHoaDon() {
+    DatabaseReference hoaDonRef =
+        FirebaseDatabase.instance.ref().child('HoaDon');
+
+    // Tạo một hóa đơn mới
+    DatabaseReference newHoaDonRef = hoaDonRef.push();
+    newHoaDonRef.set({
+      'TongTien': _TongTien,
+    }).then((_) {
+      String? maHD = newHoaDonRef.key;
+      //Duyệt các sản phẩm được đặt
+      for (var sanPham in widget.payItems) {
+        DatabaseReference chiTietHDRef =
+            FirebaseDatabase.instance.ref('ChiTietHD');
+        //Thêm thông tin các sản phẩm được đặt vào ChiTietHD
+        DatabaseReference newChiTietHD = chiTietHDRef.push();
+        newChiTietHD.set({
+          'MaHD': maHD,
+          'TenSanPham': sanPham.Ten,
+          'GiaSanPham': sanPham.Gia,
+          'SoLuong': sanPham.SoLuong,
+        });
+      }
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Thành công'),
+            content: const Text('Đơn hàng đã được tạo thành công.'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Đóng'),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    //Chuyển qua màn hình quản lý đơn hàng
+                    MaterialPageRoute(builder: (context) => const bottomNav()),
+                  );
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }).catchError((error) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Đặt hàng thành thất bại'),
+          content: const Text('Vui lòng thử lại!'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+  //
+  //Xóa sản phẩm trong giỏ sau khi đặt thành công
+
+  void _xoaSpSauKhiDat() {
+    Cart cart = Cart();
+    List<SanPham> payItems = widget.payItems;
+
+    // Lọc ra những sản phẩm đã được đặt thành công
+    List<SanPham> datThanhCong =
+        cart.cartItems.where((item) => payItems.contains(item)).toList();
+
+    // Xóa những sản phẩm đã được đặt thành công
+    for (var item in datThanhCong) {
+      cart.cartItems.remove(item);
+    }
+  }
+  //
 
   @override
   Widget build(BuildContext context) {
@@ -313,7 +398,10 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
                 backgroundColor: const Color.fromRGBO(56, 60, 160, 20),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10))),
-            onPressed: () {},
+            onPressed: () {
+              _createHoaDon();
+              _xoaSpSauKhiDat();
+            },
             child: const Text(
               "Đặt hàng",
               style: TextStyle(color: Colors.white, fontSize: 17),
