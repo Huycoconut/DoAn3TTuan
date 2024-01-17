@@ -17,6 +17,7 @@ class _RegisterState extends State<Register> {
   TextEditingController re_pass = TextEditingController();
   TextEditingController hoten = TextEditingController();
   TextEditingController sdt = TextEditingController();
+  TextEditingController diachi = TextEditingController();
   String _errorMessage = '';
 
   Future<void> SignUp() async {
@@ -176,8 +177,23 @@ class _RegisterState extends State<Register> {
                     )),
                 controller: sdt,
               ),
+              const Padding(padding: EdgeInsets.only(top: 10)),
+              Text(
+                "Địa chỉ",
+                style: TextStyle(fontSize: 20.0),
+              ),
+              TextField(
+                decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.location_on),
+                    hintText: "Địa chỉ",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      borderSide:
+                          BorderSide(color: Color.fromRGBO(56, 60, 160, 20)),
+                    )),
+                    controller: diachi,
+              ),
               const Padding(padding: EdgeInsets.only(top: 30)),
-
               //btn dangky
               ElevatedButton(
                 onPressed: () {

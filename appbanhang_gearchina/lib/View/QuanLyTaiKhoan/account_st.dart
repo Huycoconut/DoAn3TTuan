@@ -22,11 +22,16 @@ class _QuanLytaiKhoanState extends State<QuanLytaiKhoan> {
         alignment: Alignment.topLeft,
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start  ,
             children: [
-              const Text(
-                "Quản Lý Tài Khoản",
-                style: TextStyle(fontSize: 35.0, fontWeight: FontWeight.bold),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Quản Lý Tài Khoản",
+                    style: TextStyle(fontSize: 35.0, fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
               const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
