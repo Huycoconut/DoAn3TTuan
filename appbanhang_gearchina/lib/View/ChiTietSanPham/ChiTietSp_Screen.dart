@@ -5,8 +5,10 @@ import 'package:appbanhang_gearchina/View/ChiTietSanPham/MauSac_Sp.dart';
 import 'package:appbanhang_gearchina/View/ChiTietSanPham/QL_SoLuongSp.dart';
 import 'package:appbanhang_gearchina/View/GioHang/GioHang_Screen.dart';
 import 'package:appbanhang_gearchina/View/GioHang/class_LuuTruSp_TrongGio.dart';
+import 'package:appbanhang_gearchina/View/GioHang/data_Giohang.dart';
 import 'package:appbanhang_gearchina/View/SanPham/data_SanPham.dart';
 import 'package:appbanhang_gearchina/View/ThanhToan/ThanhToan_Screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
@@ -24,8 +26,11 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
   List<SanPham> cartItems = [];
 //Mua sản phẩm
   List<SanPham> payItems = [];
+  //
+  List<GioHang> cartItemsGioHang = [];
 
   SanPham? _chiTietSp;
+  GioHang? _gioHang;
   @override
   void initState() {
     super.initState();
@@ -64,7 +69,7 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
           cartItems.indexWhere((product) => product.Id == _chiTietSp!.Id);
       if (index != -1) {
         cartItems[index].SoLuong = _chiTietSp!.SoLuong;
-       // payItems[index].SoLuong = _chiTietSp!.SoLuong;
+        // payItems[index].SoLuong = _chiTietSp!.SoLuong;
       }
     }
   }
@@ -74,9 +79,19 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
     Cart cart = Cart();
     bool isAlreadyInCart = cart.cartItems.any((item) => item.Id == sanPham.Id);
     if (!isAlreadyInCart) {
-      cart.cartItems.add(sanPham);
+      Cartlocal.cartItems.add(sanPham);
       _loadCartItems();
-    } 
+    }
+  }
+
+  //Thêm sản phẩm vào giỏ
+  void _addToCartUserID(GioHang gioHang) {
+    Cart cart = Cart();
+    bool isAlreadyInCart = cart.cartItems.any((item) => item.Id == gioHang.Id);
+    if (!isAlreadyInCart) {
+      cart.cartItems.add(gioHang);
+      _loadCartItems();
+    }
   }
 
 //Cập nhật số lượng sản phẩm
@@ -91,14 +106,88 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
   void _loadCartItems() {
     Cart cart = Cart();
     setState(() {
-      cartItems = cart.cartItems;
+      cartItems = Cartlocal.cartItems;
     });
 
-     // Kiểm tra nếu danh sách sản phẩm trong giỏ hàng rỗng, thực hiện xóa
-  if (cartItems.isEmpty) {
-    cart.cartItems.clear();
-    payItems.clear();
+    // Kiểm tra nếu danh sách sản phẩm trong giỏ hàng rỗng, thực hiện xóa
+    if (cartItems.isEmpty) {
+      cart.cartItems.clear();
+      payItems.clear();
+    }
   }
+
+//
+  void _addToCartForUserID() {
+    User? user = FirebaseAuth.instance.currentUser;
+    String userID = user!.uid;
+    DatabaseReference cartRef =
+        FirebaseDatabase.instance.ref().child('GioHang');
+
+    // Tạo một khóa ngẫu nhiên cho mục trong giỏ hàng
+    DatabaseReference newCartItemRef = cartRef.push();
+
+    //Map chứa thông tin sản phẩm và userID
+    Map<String, dynamic> cartItemData = {
+      'userID': userID,
+      'sanPham': {
+        'Id': _chiTietSp!.Id,
+        'Ten': _chiTietSp!.Ten,
+        'SoLuong': _chiTietSp!.SoLuong,
+        'Gia': _chiTietSp!.Gia,
+        'Hinh': _chiTietSp!.Hinh,
+        'Loai': _chiTietSp!.Loai,
+        'Mau': _chiTietSp!.Mau,
+        'MauSac': _chiTietSp!.MauSac,
+        'MoTa': _chiTietSp!.MoTa,
+        'ThongSo': _chiTietSp!.ThongSo,
+        'TrangThai': _chiTietSp!.TrangThai,
+      }
+    };
+
+    // Lưu thông tin vào Firebase Realtime Database
+    newCartItemRef.set(cartItemData).then((_) {
+      // Thành công
+      print('Thêm vào giỏ hàng thành công');
+    }).catchError((error) {
+      // Xảy ra lỗi
+      print('Lỗi khi thêm vào giỏ hàng: $error');
+    });
+  }
+
+  //
+  void _ThemVaMua_UserID() {
+    // Kiểm tra xem sản phẩm đã được thêm vào giỏ hàng chưa
+    bool isProductAdded =
+        cartItems.any((product) => product.Id == _gioHang!.Id);
+
+    if (!isProductAdded) {
+      // Tạo đối tượng SanPham từ thông tin chi tiết sản phẩm
+      GioHang currentProduct = GioHang(
+        Id: _gioHang!.Id,
+        Ten: _gioHang!.Ten,
+        SoLuong: _gioHang!.SoLuong,
+        Gia: _gioHang!.Gia,
+        Hinh: _gioHang!.Hinh,
+        Loai: _gioHang!.Loai,
+        Mau: _gioHang!.Mau,
+        MauSac: _gioHang!.MauSac,
+        MoTa: _gioHang!.MoTa,
+        ThongSo: _gioHang!.ThongSo,
+        TrangThai: _gioHang!.TrangThai,
+      );
+
+      // Thêm sản phẩm vào giỏ hàng và thanh toán
+      //   cartItems.add(currentProduct);
+      // payItems.add(currentProduct);
+      _addToCartUserID(currentProduct);
+    } else {
+      // Sản phẩm đã tồn tại trong giỏ hàng, cập nhật số lượng
+      int index = cartItems.indexWhere((product) => product.Id == _gioHang!.Id);
+      if (index != -1) {
+        cartItems[index].SoLuong = _gioHang!.SoLuong;
+        //payItems[index].SoLuong = _chiTietSp!.SoLuong;
+      }
+    }
   }
 
 //Cập nhật màu được chọn
@@ -326,6 +415,7 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                                                 BorderRadius.circular(5))),
                                     onPressed: () {
                                       _ThemVaMua();
+                                      _addToCartForUserID();
                                     },
                                     child: const Text(
                                       "Thêm vào giỏ hàng",

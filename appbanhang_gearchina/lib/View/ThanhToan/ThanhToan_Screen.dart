@@ -4,7 +4,9 @@ import 'package:appbanhang_gearchina/View/ThanhToan/SpThanhToan.dart';
 import 'package:appbanhang_gearchina/View/GioHang/SpTrongGio.dart';
 import 'package:appbanhang_gearchina/View/ThanhToan/SuaDiaChi_Screen.dart';
 import 'package:appbanhang_gearchina/View/Trang_chu/botNav.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 
 class thanhToan_Screen extends StatefulWidget {
@@ -34,8 +36,8 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
   void _loadCartItems() {
     Cart cart = Cart();
     setState(() {
-      cartItems = cart.cartItems;
-      cartItems = GioHang.HienSpTrongGio();
+      cartItems = Cartlocal.cartItems;
+      cartItems = GioHang_CRUD.HienSpTrongGio();
     });
   }
 
@@ -67,12 +69,17 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
   //
   //Tạo hóa đơn
   void _createHoaDon() {
+    User? user = FirebaseAuth.instance.currentUser;
+    String userID = user!.uid;
+    DatabaseReference cartRef =
+        FirebaseDatabase.instance.ref().child('GioHang');
     DatabaseReference hoaDonRef =
         FirebaseDatabase.instance.ref().child('HoaDon');
 
     // Tạo một hóa đơn mới
     DatabaseReference newHoaDonRef = hoaDonRef.push();
     newHoaDonRef.set({
+      'UserID': userID,
       'TongTien': _TongTien,
     }).then((_) {
       String? maHD = newHoaDonRef.key;
@@ -138,7 +145,7 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
 
     // Lọc ra những sản phẩm đã được đặt thành công
     List<SanPham> datThanhCong =
-        cart.cartItems.where((item) => payItems.contains(item)).toList();
+        Cartlocal.cartItems.where((item) => payItems.contains(item)).toList();
 
     // Xóa những sản phẩm đã được đặt thành công
     for (var item in datThanhCong) {
@@ -150,6 +157,11 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
+    String? userId;
+    if (FirebaseAuth.instance.currentUser != null) {
+      userId = FirebaseAuth.instance.currentUser?.uid;
+    }
+    final ref = FirebaseDatabase.instance.ref("/TaiKhoan");
 
     return Scaffold(
       body: Column(
@@ -182,51 +194,60 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
               ),
             ],
           ),
-          Container(
-            padding: const EdgeInsets.only(left: 23),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    const Text(
-                      "Địa chỉ nhận hàng",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                    ),
-                    const SizedBox(
-                      width: 100,
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const suaDiaChi_Screen()));
-                      },
-                      child: const Text(
-                        "Sửa",
-                        style: TextStyle(color: Colors.grey),
+          Expanded(
+            child: FirebaseAnimatedList(
+                query: ref,
+                itemBuilder: (context, snapshot, animation, index) {
+                  if (snapshot.child('userID').value.toString() == userId) {
+                    return Container(
+                      padding: const EdgeInsets.only(left: 23),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              const Text(
+                                "Địa chỉ nhận hàng",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 15),
+                              ),
+                              const SizedBox(
+                                width: 100,
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const suaDiaChi_Screen()));
+                                },
+                                child: const Text(
+                                  "Sửa",
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Text(
+                            "${snapshot.child('Hoten').value.toString()}||${snapshot.child('SĐT').value.toString()}",
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w300, fontSize: 12),
+                          ),
+                          Text(
+                            snapshot.child('DiaChi').value.toString(),
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w300, fontSize: 12),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-                const Text(
-                  "Vũ Hoàng Huy | 0335343714",
-                  style: TextStyle(fontWeight: FontWeight.w300, fontSize: 12),
-                ),
-                const Text(
-                  "128/25 Nguyễn Lâm, phường 3, Bình Thạnh, HCM",
-                  style: TextStyle(fontWeight: FontWeight.w300, fontSize: 12),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(
-            height: 20,
+                    );
+                  } else {
+                    return Container();
+                  }
+                }),
           ),
           Container(
             alignment: Alignment.topLeft,

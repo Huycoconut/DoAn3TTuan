@@ -1,3 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:appbanhang_gearchina/View/GioHang/class_LuuTruSp_TrongGio.dart';
 import 'package:appbanhang_gearchina/View/SanPham/data_SanPham.dart';
@@ -27,7 +30,7 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
 
   void _loadCartItems() {
     setState(() {
-      cartItems = GioHang.HienSpTrongGio();
+      cartItems = GioHang_CRUD.HienSpTrongGio();
     });
   }
 
@@ -35,144 +38,166 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
   void _loadCartItems_TrongGio() {
     Cart cart = Cart();
     setState(() {
-      cartItems = cart.cartItems;
+      cartItems = Cartlocal.cartItems;
     });
   }
 
   //Xóa sản phẩm
-  void _removeItemFromCart(int index) {
-    setState(() {
-      widget.cartItems.removeAt(index);
-      _loadCartItems(); // Cập nhật lại giao diện giỏ hàng
-    });
+  void _capNhatTrangThaiSp(String productId, String newStatus) {
+    final productRef =
+        FirebaseDatabase.instance.ref("GioHang/$productId/sanPham/TrangThai");
+    productRef.set(newStatus);
   }
 
-  final bool _check = false;
+//
 
   @override
   Widget build(BuildContext context) {
+
     var media = MediaQuery.of(context).size;
     _isButtonEnabled = selectedItems.isNotEmpty;
 
+    String? userId;
+    if (FirebaseAuth.instance.currentUser != null) {
+      userId = FirebaseAuth.instance.currentUser?.uid;
+    }
+    final ref = FirebaseDatabase.instance.ref("GioHang");
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Giỏ hàng'),
+        centerTitle: true,
+      ),
       body: Column(
         children: [
-          const SizedBox(
-            height: 20,
-          ),
-          Row(
-            children: [
-              const SizedBox(
-                width: 15,
-              ),
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(
-                  Icons.arrow_back_ios_new,
-                ),
-              ),
-              const SizedBox(
-                width: 85,
-              ),
-              const Text(
-                "Giỏ hàng",
-                style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
           Expanded(
-            child: ListView.builder(
-              itemCount: widget.cartItems.length,
-              itemBuilder: (context, index) {
-                final sanPham = widget.cartItems[index];
-                return SingleChildScrollView(
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 15),
-                    padding: const EdgeInsets.only(bottom: 15),
-                    decoration: const BoxDecoration(
-                      border: Border(
-                          bottom: BorderSide(
-                        width: 1,
-                        color: Colors.grey,
-                      )),
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Checkbox(
-                              value: selectedItems.contains(sanPham),
-                              onChanged: (value) {
-                                //Kiểm tra nếu check sản phẩm
-                                setState(() {
-                                  if (value!) {
-                                    selectedItems.add(sanPham);
-                                  } else {
-                                    selectedItems.remove(sanPham);
-                                  }
-                                });
-                              },
+            child: FirebaseAnimatedList(
+                query: ref,
+                itemBuilder: (context, snapshot, animation, index) {
+                  if (snapshot.child('userID').value.toString() == userId &&
+                      snapshot
+                              .child('sanPham')
+                              .child('TrangThai')
+                              .value
+                              .toString() ==
+                          '1') {
+                    return SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(bottom: 15),
+                            padding: const EdgeInsets.only(bottom: 15),
+                            decoration: const BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(
+                                width: 1,
+                                color: Colors.grey,
+                              )),
                             ),
-                            Column(
+                            child: Column(
                               children: [
-                                Image.network(
-                                  sanPham.Hinh,
-                                  width: media.width / 4.23,
-                                ),
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  sanPham.Ten,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text("Số lượng: ${sanPham.SoLuong}"),
-                                const Text("Màu: xanh"),
                                 Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Text(
-                                      "₫2000000 ",
-                                      style: TextStyle(
-                                        decoration: TextDecoration.lineThrough,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.grey,
-                                      ),
+                                    
+                                    Checkbox(
+                                      value: _isButtonEnabled,
+                                      onChanged: (value) {
+                                        //Kiểm tra nếu check sản phẩm
+                                        setState(() {
+                                         
+                                        });
+                                      
+                                      },
                                     ),
-                                    Text(
-                                      sanPham.Gia.toString(),
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.redAccent),
+                                    Column(
+                                      children: [
+                                        Image.network(
+                                          snapshot
+                                              .child('sanPham')
+                                              .child('Hinh')
+                                              .value
+                                              .toString(),
+                                          width: media.width / 4.23,
+                                        ),
+                                      ],
                                     ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          snapshot
+                                              .child('sanPham')
+                                              .child('Ten')
+                                              .value
+                                              .toString(),
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                            "Số lượng: ${snapshot.child('sanPham').child('SoLuong').value.toString()}"),
+                                        const Text(
+                                            "Màu: ${/* sanPham.MauSac == 0 ? "Xám" : sanPham.MauSac == 1 ? "Đen" : */ "Bạc"}"),
+                                        Row(
+                                          children: [
+                                            const Text(
+                                              "₫2000000 ",
+                                              style: TextStyle(
+                                                decoration:
+                                                    TextDecoration.lineThrough,
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                            Text(
+                                              snapshot
+                                                  .child('sanPham')
+                                                  .child('Gia')
+                                                  .value
+                                                  .toString(),
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.redAccent),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                    IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            final productID = snapshot.key;
+                                            final TrangThaiHienTai = snapshot
+                                                .child('sanPham')
+                                                .child('TrangThai')
+                                                .value
+                                                .toString();
+
+                                            final newTrangThai =
+                                                TrangThaiHienTai == '1'
+                                                    ? '0'
+                                                    : '1';
+                                            _capNhatTrangThaiSp(
+                                                productID!, newTrangThai);
+                                          });
+                                        },
+                                        icon: const Icon(
+                                          Icons.restore_from_trash,
+                                          color: Colors.redAccent,
+                                        ))
                                   ],
-                                )
+                                ),
                               ],
                             ),
-                            IconButton(
-                                onPressed: () {
-                                  _removeItemFromCart(index);
-                                },
-                                icon: const Icon(
-                                  Icons.restore_from_trash,
-                                  color: Colors.redAccent,
-                                ))
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else {
+                    return Container();
+                  }
+                }),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(

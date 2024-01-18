@@ -22,7 +22,7 @@ class _ResultSearchState extends State<ResultSearch> {
   void _loadCartItems() {
     Cart cart = Cart();
     setState(() {
-      cartItems = cart.cartItems;
+      cartItems = Cartlocal.cartItems;
     });
   }
 

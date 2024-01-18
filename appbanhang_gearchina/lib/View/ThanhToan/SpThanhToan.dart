@@ -23,12 +23,12 @@ class _SpThanhToanState extends State<SpThanhToan> {
 
   void _loadCartItems() {
     setState(() {
-      cartItems = GioHang.HienSpTrongGio();
+      cartItems = GioHang_CRUD.HienSpTrongGio();
     });
   }
 
   void _addToCart(SanPham sanPham) {
-    GioHang.ThemSpVaoGio(sanPham);
+    GioHang_CRUD.ThemSpVaoGio(sanPham);
     // Hiển thị thông báo thành công hoặc cập nhật giao diện
   }
 

@@ -1,7 +1,8 @@
 import 'package:appbanhang_gearchina/View/ChiTietSanPham/MauSac_Sp.dart';
+import 'package:appbanhang_gearchina/View/GioHang/data_Giohang.dart';
 import 'package:appbanhang_gearchina/View/SanPham/data_SanPham.dart';
 
-class GioHang {
+class GioHang_CRUD {
   static List<SanPham> items = [];
   static void ThemSpVaoGio(SanPham sanPham) {
     items.add(sanPham);
@@ -34,8 +35,19 @@ class CartItems {
   static List<SanPham> cartItems = [];
 }
 
+class Cartlocal {
+  static List<SanPham> cartItems = [];
+
+  static final Cartlocal _instance = Cartlocal._internal();
+
+  factory Cartlocal() {
+    return _instance;
+  }
+ 
+  Cartlocal._internal();
+}
 class Cart {
-  List<SanPham> cartItems = [];
+  List<GioHang> cartItems = [];
 
   static final Cart _instance = Cart._internal();
 

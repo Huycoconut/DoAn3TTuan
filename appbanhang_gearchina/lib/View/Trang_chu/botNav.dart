@@ -20,7 +20,7 @@ class _bottomNavState extends State<bottomNav> {
   void _loadCartItems() {
     Cart cart = Cart();
     setState(() {
-      cartItems = cart.cartItems;
+      cartItems = Cartlocal.cartItems;
     });
   }
 
