@@ -1,5 +1,6 @@
 import 'package:appbanhang_gearchina/View/DangNhap_DangKy/firebase_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:appbanhang_gearchina/View/DangNhap_DangKy/login.dart';
 
@@ -11,7 +12,6 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  TextEditingController tentaikhoan = TextEditingController();
   TextEditingController matkhau = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController re_pass = TextEditingController();
@@ -20,60 +20,144 @@ class _RegisterState extends State<Register> {
   TextEditingController diachi = TextEditingController();
   String _errorMessage = '';
 
+  //them user
+  Future<void> newUser() async {
+    String? userId;
+    if (FirebaseAuth.instance.currentUser != null) {
+      userId = FirebaseAuth.instance.currentUser?.uid;
+    }
+    final dbref = FirebaseDatabase.instance.ref().child('TaiKhoan');
+    DatabaseReference newUser_ = dbref.push();
+
+    newUser_.set({
+      'userID': userId,
+      'email': email.text,
+      'Password': matkhau.text,
+      'DiaChi': diachi.text,
+      'SĐT': sdt.text,
+      'Hoten': hoten.text,
+    });
+  }
+
+  // kiem tra ki tu dac biet
+  bool kiemtra(String input) {
+    RegExp specialCharRegex = RegExp(r'[!@#%^&*(),.?":{}|<>]');
+    return specialCharRegex.hasMatch(input);
+  }
+
   Future<void> SignUp() async {
-    try{
+    try {
+      // kiem tra mat khau co ki tu dac biet hay ko
+      if (kiemtra(matkhau.text) == false) {
+        setState(() {
+          _errorMessage = 'Mật khẩu chứa ít nhất 1 kí tự đặc biệt';
+        });
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text(_errorMessage),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("Quay lại"))
+                ],
+              );
+            });
+        return;
+      }
+
+      // kiem tra pass < 6 ki tu
+      if (matkhau.text.length < 6) {
+        setState(() {
+          _errorMessage = 'Mật khẩu chứa ít nhất 6 kí tự';
+        });
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text(_errorMessage),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("Quay lại"))
+                ],
+              );
+            });
+        return;
+      }
+
       // kiem tra pass va repass
       if (matkhau.text != re_pass.text) {
         setState(() {
           _errorMessage = 'Mật khẩu và Repassword không giống nhau.';
         });
-        showDialog(context: context, builder: (context){
-          return AlertDialog(
-            title: Text(_errorMessage),
-            actions: [
-              TextButton(onPressed: () {
-                Navigator.of(context).pop();
-              }, child: Text("Quay lại"))
-            ],
-          );
-        });
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text(_errorMessage),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("Quay lại"))
+                ],
+              );
+            });
         // dung lai neu pass != repass
         return;
       }
-      User? user = await FirebaseAuthService().signUpWithEmailAndPassword(email.text, matkhau.text);
+
+      User? user = await FirebaseAuthService()
+          .signUpWithEmailAndPassword(email.text, matkhau.text);
       if (user != null) {
         setState(() {
           _errorMessage = 'Đăng ký thành công.';
         });
-        showDialog(context: context, builder: (context){
-          return AlertDialog(
-            title: Text(_errorMessage),
-            actions: [
-              TextButton(onPressed: () {
-                Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Login()));
-              }, child: Text("Quay lại trang đăng nhập"))
-            ],
-          );
-        });
+        newUser();
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text(_errorMessage),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Login()));
+                      },
+                      child: Text("Quay lại trang đăng nhập"))
+                ],
+              );
+            });
       } else {
         setState(() {
-          _errorMessage = 'Đăng ký thất bại. Vui lòng thử lại.';
+          _errorMessage = 'Email đã tồn tại';
         });
-        showDialog(context: context, builder: (context){
-          return AlertDialog(
-            title: Text(_errorMessage),
-            actions: [
-              TextButton(onPressed: () {
-                Navigator.of(context).pop();
-              }, child: Text("Quay lại"))
-            ],
-          );
-        });
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text(_errorMessage),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("Quay lại"))
+                ],
+              );
+            });
       }
-    }
-    catch(e){}
+    } catch (e) {}
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -128,7 +212,7 @@ class _RegisterState extends State<Register> {
                     )),
                 controller: matkhau,
               ),
-              
+
               //khung dk_nhaplaimatkhau
               Text(
                 "Nhập Lại Mật Khẩu",
@@ -191,7 +275,7 @@ class _RegisterState extends State<Register> {
                       borderSide:
                           BorderSide(color: Color.fromRGBO(56, 60, 160, 20)),
                     )),
-                    controller: diachi,
+                controller: diachi,
               ),
               const Padding(padding: EdgeInsets.only(top: 30)),
               //btn dangky
