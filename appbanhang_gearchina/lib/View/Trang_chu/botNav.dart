@@ -1,9 +1,9 @@
 import 'package:appbanhang_gearchina/View/GioHang/GioHang_Screen.dart';
 import 'package:appbanhang_gearchina/View/GioHang/class_LuuTruSp_TrongGio.dart';
 import 'package:appbanhang_gearchina/View/QuanLyTaiKhoan/account_st.dart';
-import 'package:appbanhang_gearchina/View/SanPham/SanPham_screen.dart';
 import 'package:appbanhang_gearchina/View/SanPham/data_SanPham.dart';
 import 'package:appbanhang_gearchina/View/ThongBao/noti_screen.dart';
+import 'package:appbanhang_gearchina/View/TimKiem/TimKiem_screen.dart';
 import 'package:appbanhang_gearchina/View/Trang_chu/Home.dart';
 import 'package:flutter/material.dart';
 
@@ -50,7 +50,7 @@ class _bottomNavState extends State<bottomNav> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const sanPham_screen()));
+                      builder: (context) => const Search()));
             },
             icon: const Icon(Icons.search),
             color: Colors.white,
