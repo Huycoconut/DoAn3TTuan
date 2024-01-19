@@ -16,7 +16,7 @@ class _OrderState extends State<Order> {
     if (FirebaseAuth.instance.currentUser != null) {
       userId = FirebaseAuth.instance.currentUser?.uid;
     }
-    final ref = FirebaseDatabase.instance.ref("/order");
+    final ref = FirebaseDatabase.instance.ref("/HoaDon");
     return Container(
       decoration: const BoxDecoration(border: Border()),
       child: FirebaseAnimatedList(
@@ -35,7 +35,7 @@ class _OrderState extends State<Order> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                          "Tổng tiền: ${snapshot.child('total').value.toString()}"),
+                          "Tổng tiền: ${snapshot.child('ThanhTien').value.toString()}"),
                       Row(
                         children: [
                           const Text(
@@ -43,9 +43,9 @@ class _OrderState extends State<Order> {
                             style: const TextStyle(fontSize: 11),
                           ),
                           Text(
-                            snapshot.child('status').value == 1
+                            snapshot.child('TrangThai').value == 1
                                 ? "Đang xác nhận"
-                                : snapshot.child('status').value == 2
+                                : snapshot.child('TrangThai').value == 2
                                     ? "Đang giao"
                                     : "Đã giao",
                             style: const TextStyle(fontSize: 11),

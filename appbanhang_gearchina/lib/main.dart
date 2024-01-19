@@ -12,16 +12,22 @@ import 'package:appbanhang_gearchina/View/SanPham/SanPham_screen.dart';
 import 'package:appbanhang_gearchina/View/Trang_chu/Home.dart';
 import 'package:appbanhang_gearchina/View/Trang_chu/botNav.dart';
 import 'package:appbanhang_gearchina/firebase_options.dart';
+import 'package:appbanhang_gearchina/localStorage/local_storage.dart';
 import 'package:appbanhang_gearchina/test.dart';
 import 'package:appbanhang_gearchina/test2.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await Hive.initFlutter('hiveusersfolder');
+  await Hive.openBox("boxSlider");
+  await DB().getListSlider();
   runApp(const MyApp());
 }
 

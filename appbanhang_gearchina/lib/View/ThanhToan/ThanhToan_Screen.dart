@@ -422,6 +422,8 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
             onPressed: () {
               _createHoaDon();
               _xoaSpSauKhiDat();
+
+              //Thông báo đặt hàng thành công
             },
             child: const Text(
               "Đặt hàng",

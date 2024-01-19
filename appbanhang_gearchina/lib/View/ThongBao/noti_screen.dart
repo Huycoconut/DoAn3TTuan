@@ -1,5 +1,6 @@
 import 'package:appbanhang_gearchina/View/ThongBao/order.dart';
 import 'package:appbanhang_gearchina/View/ThongBao/promotion.dart';
+import 'package:appbanhang_gearchina/localStorage/local_storage.dart';
 import 'package:flutter/material.dart';
 
 class NotiScreen extends StatefulWidget {
@@ -21,16 +22,16 @@ class _NotiScreenState extends State<NotiScreen> {
               color: const Color.fromRGBO(56, 60, 160, 20),
               child: Container(
                 padding: const EdgeInsets.fromLTRB(30, 0, 10, 0),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
+                    const Text(
                       "Khuyến mãi",
                       style: TextStyle(color: Colors.white),
                     ),
                     IconButton(
-                        onPressed: null,
-                        icon: Icon(
+                        onPressed: () {},
+                        icon: const Icon(
                           Icons.arrow_forward_ios,
                           color: Colors.white,
                         ))

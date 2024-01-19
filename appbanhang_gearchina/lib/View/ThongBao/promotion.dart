@@ -10,7 +10,7 @@ class Promotion extends StatefulWidget {
 }
 
 class _PromotionState extends State<Promotion> {
-  final ref = FirebaseDatabase.instance.ref("/promotion");
+  final ref = FirebaseDatabase.instance.ref("/KhuyenMai");
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -30,9 +30,9 @@ class _PromotionState extends State<Promotion> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(snapshot.child('name').value.toString()),
+                    Text(snapshot.child('Ten').value.toString()),
                     Text(
-                      "${snapshot.child('start_date').value.toString()} - ${snapshot.child('end_date').value.toString()}",
+                      "${snapshot.child('NgayBatDau').value.toString()} - ${snapshot.child('NgayKetThuc').value.toString()}",
                       style: TextStyle(fontSize: 11),
                     )
                   ],
