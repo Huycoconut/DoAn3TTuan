@@ -27,7 +27,7 @@ class _RegisterState extends State<Register> {
       userId = FirebaseAuth.instance.currentUser?.uid;
     }
     final dbref = FirebaseDatabase.instance.ref().child('TaiKhoan');
-    DatabaseReference newUser_ = dbref.push();
+    DatabaseReference newUser_ = dbref.child("$userId");
 
     newUser_.set({
       'userID': userId,
