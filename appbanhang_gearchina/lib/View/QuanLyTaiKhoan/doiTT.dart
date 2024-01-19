@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:appbanhang_gearchina/View/Trang_chu/botNav.dart';
 
 class DoiTT extends StatefulWidget {
   const DoiTT({super.key});
@@ -22,11 +23,12 @@ class _DoiTTState extends State<DoiTT> {
     DatabaseReference updateUser_ = dbref.child("$userId");
 
     updateUser_.update({
-      'DiaChi' : diachimoi.text,
-      'SĐT' : sdtmoi.text,
-      'Hoten' : hotenmoi.text,
+      'DiaChi': diachimoi.text,
+      'SĐT': sdtmoi.text,
+      'Hoten': hotenmoi.text,
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,41 +54,56 @@ class _DoiTTState extends State<DoiTT> {
                         hintText: "Họ tên",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          borderSide:
-                              BorderSide(color: Color.fromRGBO(56, 60, 160, 20)),
+                          borderSide: BorderSide(
+                              color: Color.fromRGBO(56, 60, 160, 20)),
                         )),
-                      controller: hotenmoi,
+                    controller: hotenmoi,
                   ),
                   const Padding(padding: EdgeInsets.only(top: 10)),
-
                   TextField(
                     decoration: const InputDecoration(
                         prefixIcon: Icon(Icons.phone),
                         hintText: "Số Điện Thoại",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          borderSide:
-                              BorderSide(color: Color.fromRGBO(56, 60, 160, 20)),
+                          borderSide: BorderSide(
+                              color: Color.fromRGBO(56, 60, 160, 20)),
                         )),
-                        controller: sdtmoi,
+                    controller: sdtmoi,
                   ),
                   const Padding(padding: EdgeInsets.only(top: 10)),
-
                   TextField(
                     decoration: const InputDecoration(
                         prefixIcon: Icon(Icons.location_on),
                         hintText: "Địa chỉ",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          borderSide:
-                              BorderSide(color: Color.fromRGBO(56, 60, 160, 20)),
+                          borderSide: BorderSide(
+                              color: Color.fromRGBO(56, 60, 160, 20)),
                         )),
-                        controller: diachimoi,
+                    controller: diachimoi,
                   ),
                   const Padding(padding: EdgeInsets.only(top: 10)),
                   ElevatedButton(
                     onPressed: () {
                       updateUser();
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text("Chỉnh sửa thông tin thành công"),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => bottomNav()));
+                                    },
+                                    child: Text("Quay lại"))
+                              ],
+                            );
+                          });
                     },
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(500, 60),

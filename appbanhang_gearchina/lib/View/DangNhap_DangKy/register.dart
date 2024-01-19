@@ -32,7 +32,6 @@ class _RegisterState extends State<Register> {
     newUser_.set({
       'userID': userId,
       'email': email.text,
-      'Password': matkhau.text,
       'DiaChi': diachi.text,
       'SĐT': sdt.text,
       'Hoten': hoten.text,

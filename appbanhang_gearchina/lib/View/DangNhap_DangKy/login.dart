@@ -2,6 +2,7 @@ import 'package:appbanhang_gearchina/View/DangNhap_DangKy/firebase_auth.dart';
 import 'package:appbanhang_gearchina/View/DangNhap_DangKy/quenMK.dart';
 import 'package:appbanhang_gearchina/View/Trang_chu/Home.dart';
 import 'package:appbanhang_gearchina/View/Trang_chu/botNav.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:appbanhang_gearchina/View/QuanLyTaiKhoan/account_st.dart';
 import 'package:appbanhang_gearchina/View/DangNhap_DangKy/register.dart';
@@ -60,7 +61,7 @@ class _LoginState extends State<Login> {
   }
 
   //dang nhap voi google
-  Future<UserCredential?> signInWithGoogle() async {
+  Future</*UserCredential?*/User?> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       final GoogleSignInAuthentication googleAuth =
@@ -71,7 +72,22 @@ class _LoginState extends State<Login> {
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-      return await FirebaseAuth.instance.signInWithCredential(credential);
+      final UserCredential authResult = await FirebaseAuth.instance.signInWithCredential(credential);
+      String? userId;
+      if (FirebaseAuth.instance.currentUser != null) {
+        userId = FirebaseAuth.instance.currentUser?.uid;
+      }
+      final dbref = FirebaseDatabase.instance.ref().child('TaiKhoan');
+      DatabaseReference newUser_ = dbref.child("$userId");
+
+      newUser_.set({
+        'userID': userId,
+        'email': authResult.user!.email,
+        'DiaChi': authResult.user!.uid,
+        'SĐT': authResult.user!.phoneNumber,
+        'Hoten': authResult.user!.displayName,
+      });
+      //return await FirebaseAuth.instance.signInWithCredential(credential);
     } catch (e) {}
     return null;
   }
