@@ -1,4 +1,6 @@
 import 'package:appbanhang_gearchina/View/QuanLyTaiKhoan/account_st.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class suaDiaChi_Screen extends StatefulWidget {
@@ -9,8 +11,27 @@ class suaDiaChi_Screen extends StatefulWidget {
 }
 
 class _suaDiaChi_ScreenState extends State<suaDiaChi_Screen> {
+  final hoTen = TextEditingController();
+  final sDT = TextEditingController();
+  final diaChi = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    String? userId;
+    if (FirebaseAuth.instance.currentUser != null) {
+      userId = FirebaseAuth.instance.currentUser?.uid;
+    }
+
+    void updateData(final newSoLuong, final newSDT, final newDiaChi) async {
+      DatabaseReference dbref = FirebaseDatabase.instance.ref('TaiKhoan');
+      final DatabaseReference ref = dbref.child('$userId');
+      await ref.update({
+        'Hoten': newSoLuong,
+        'SĐT': newSDT,
+        'DiaChi': newDiaChi,
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
           title: const Text(
@@ -34,8 +55,9 @@ class _suaDiaChi_ScreenState extends State<suaDiaChi_Screen> {
               "Họ tên:",
               style: TextStyle(fontSize: 15),
             ),
-            const TextField(
-              decoration: InputDecoration(
+            TextField(
+              controller: hoTen,
+              decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.person),
                   hintText: "Họ Tên",
                   border: OutlineInputBorder(
@@ -50,8 +72,9 @@ class _suaDiaChi_ScreenState extends State<suaDiaChi_Screen> {
               "Số Điện Thoại",
               style: TextStyle(fontSize: 15.0),
             ),
-            const TextField(
-              decoration: InputDecoration(
+            TextField(
+              controller: sDT,
+              decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.phone),
                   hintText: "Số Điện Thoại",
                   border: OutlineInputBorder(
@@ -65,8 +88,9 @@ class _suaDiaChi_ScreenState extends State<suaDiaChi_Screen> {
               "Địa chỉ",
               style: TextStyle(fontSize: 15.0),
             ),
-            const TextField(
-              decoration: InputDecoration(
+            TextField(
+              controller: diaChi,
+              decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.location_on),
                   hintText: "Địa chỉ",
                   border: OutlineInputBorder(
@@ -78,12 +102,23 @@ class _suaDiaChi_ScreenState extends State<suaDiaChi_Screen> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return  LogoutDialog();
-                  },
-                );
+                setState(() {
+                  updateData(hoTen.text, sDT.text, diaChi.text);
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text("Sửa địa chỉ thành công!"),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text("Quay lại"))
+                          ],
+                        );
+                      });
+                });
               },
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(500, 60),

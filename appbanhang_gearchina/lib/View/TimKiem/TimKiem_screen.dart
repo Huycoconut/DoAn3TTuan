@@ -85,7 +85,7 @@ class _SearchState extends State<Search> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => gioHang_Screen(
-                              cartItems: cartItems,
+                            
                             )));
               },
               icon: const Icon(Icons.shopping_bag),

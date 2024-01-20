@@ -47,12 +47,6 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
     cartItems.clear();
     super.dispose();
   }
-//load sản phẩm trong lên màn hình
-/*   void _loadCartItems() {
-    setState(() {
-      cartItems = GioHang.HienSpTrongGio();
-    });
-  } */
 
 //Tính tổng tiền
   void _tinhTongTien() {
@@ -94,6 +88,7 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
           'TenSanPham': sanPham.Ten,
           'GiaSanPham': sanPham.Gia,
           'SoLuong': sanPham.SoLuong,
+          'TrangThai': sanPham.TrangThai
         });
       }
       showDialog(
@@ -318,7 +313,7 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
             ),
           ),
           const SizedBox(
-            height: 20,
+            height: 200,
           ),
           Container(
             alignment: Alignment.topLeft,
@@ -422,8 +417,6 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
             onPressed: () {
               _createHoaDon();
               _xoaSpSauKhiDat();
-
-              //Thông báo đặt hàng thành công
             },
             child: const Text(
               "Đặt hàng",

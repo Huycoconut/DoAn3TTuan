@@ -61,7 +61,7 @@ class _bottomNavState extends State<bottomNav> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => gioHang_Screen(
-                              cartItems: cartItems,
+                            
                             )));
               },
               icon: const Icon(Icons.shopping_bag),

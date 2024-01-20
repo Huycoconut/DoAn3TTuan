@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:appbanhang_gearchina/localStorage/slider.dart';
 import 'package:appbanhang_gearchina/localStorage/local_storage.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
@@ -34,6 +35,17 @@ class _Load_SanPhamState extends State<Load_SanPham> {
           }).toList();
         });
       }
+    });
+  }
+  //
+  void _updateData_SoLuong_BanDau(int index) {
+    User? user = FirebaseAuth.instance.currentUser;
+    String userID = user!.uid;
+    final DatabaseReference ref = dbref.child('$index');
+
+    // Cập nhật giá trị số lượng thành 1
+    ref.update({
+      'SoLuong': 1,
     });
   }
 
@@ -71,6 +83,7 @@ class _Load_SanPhamState extends State<Load_SanPham> {
               return GestureDetector(
                 onTap: () {
                   setState(() {
+                     _updateData_SoLuong_BanDau(index);
                     Navigator.push(
                       context,
                       MaterialPageRoute(

@@ -7,13 +7,16 @@ class SanPham {
   final Hinh;
   int SoLuong = 0;
   final ThongSo;
-  final TrangThai;
+  String TrangThai;
   var Id;
   final Mau;
   final Gia;
   final MauSac;
+  final GiamGia;
 
   SanPham({
+  
+    required this.GiamGia,
     required this.MauSac,
     required this.Hinh,
     required this.Id,
@@ -29,6 +32,7 @@ class SanPham {
 
   factory SanPham.fromSnapshot(DataSnapshot snapshot) {
     return SanPham(
+      GiamGia: snapshot.child('GiamGia').value,
       MauSac: snapshot.child("MauSac").value,
       Gia: snapshot.child('Gia').value,
       Hinh: snapshot.child('Hinh').value,
@@ -39,7 +43,7 @@ class SanPham {
       SoLuong: int.parse(snapshot.child('SoLuong').value.toString()),
       Ten: snapshot.child('Ten').value,
       ThongSo: snapshot.child('ThongSo').value,
-      TrangThai: snapshot.child('TrangThai').value,
+      TrangThai: snapshot.child('TrangThai').value.toString(),
     );
   }
 

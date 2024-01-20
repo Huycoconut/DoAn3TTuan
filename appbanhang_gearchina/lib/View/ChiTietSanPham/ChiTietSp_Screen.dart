@@ -31,11 +31,13 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
 
   SanPham? _chiTietSp;
   GioHang? _gioHang;
+
   @override
   void initState() {
     super.initState();
     _chiTietSp = widget.sanPham;
-    _loadCartItems();
+    _updateData_SoLuong_BanDau(widget.sanPham.SoLuong);
+    // _loadCartItems();
   }
 
   void _ThemVaMua() {
@@ -46,6 +48,7 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
     if (!isProductAdded) {
       // Tạo đối tượng SanPham từ thông tin chi tiết sản phẩm
       SanPham currentProduct = SanPham(
+        GiamGia: _chiTietSp!.GiamGia,
         Id: _chiTietSp!.Id,
         Ten: _chiTietSp!.Ten,
         SoLuong: _chiTietSp!.SoLuong,
@@ -62,7 +65,9 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
       // Thêm sản phẩm vào giỏ hàng và thanh toán
       cartItems.add(currentProduct);
       payItems.add(currentProduct);
-      _addToCart(currentProduct);
+      
+      //_addToCart(currentProduct);
+      //_addToCartForUserID(currentProduct);
     } else {
       // Sản phẩm đã tồn tại trong giỏ hàng, cập nhật số lượng
       int index =
@@ -74,25 +79,7 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
     }
   }
 
-//Thêm sản phẩm vào giỏ
-  void _addToCart(SanPham sanPham) {
-    Cart cart = Cart();
-    bool isAlreadyInCart = cart.cartItems.any((item) => item.Id == sanPham.Id);
-    if (!isAlreadyInCart) {
-      Cartlocal.cartItems.add(sanPham);
-      _loadCartItems();
-    }
-  }
 
-  //Thêm sản phẩm vào giỏ
-  void _addToCartUserID(GioHang gioHang) {
-    Cart cart = Cart();
-    bool isAlreadyInCart = cart.cartItems.any((item) => item.Id == gioHang.Id);
-    if (!isAlreadyInCart) {
-      cart.cartItems.add(gioHang);
-      _loadCartItems();
-    }
-  }
 
 //Cập nhật số lượng sản phẩm
   void _updateData(int index, int newSoLuong) async {
@@ -102,92 +89,104 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
     });
   }
 
+// cập nhật số lượng ban đầu của tất cả sản phẩm
+  void _updateData_SoLuong_BanDau(int index) {
+    User? user = FirebaseAuth.instance.currentUser;
+    String userID = user!.uid;
+    final DatabaseReference ref = dbref.child('$index');
+
+    // Cập nhật giá trị số lượng thành 1
+    ref.update({
+      'SoLuong': 1,
+    });
+  }
+
 //Load sản phẩm
   void _loadCartItems() {
     Cart cart = Cart();
     setState(() {
       cartItems = Cartlocal.cartItems;
     });
-
-    // Kiểm tra nếu danh sách sản phẩm trong giỏ hàng rỗng, thực hiện xóa
-    if (cartItems.isEmpty) {
-      cart.cartItems.clear();
-      payItems.clear();
-    }
   }
 
 //
-  void _addToCartForUserID() {
+  void _addToCartForUserID(SanPham sanPham) {
     User? user = FirebaseAuth.instance.currentUser;
     String userID = user!.uid;
     DatabaseReference cartRef =
         FirebaseDatabase.instance.ref().child('GioHang');
 
-    // Tạo một khóa ngẫu nhiên cho mục trong giỏ hàng
-    DatabaseReference newCartItemRef = cartRef.push();
+    // Kiểm tra xem sản phẩm mới đã tồn tại trong giỏ hàng hay chưa
+    cartRef
+        .orderByChild('userID')
+        .equalTo(userID)
+        .once()
+        .then((DatabaseEvent snapshot) {
+      Map<dynamic, dynamic> gioHangData =
+          snapshot.snapshot.value as Map<dynamic, dynamic>;
+      gioHangData.forEach((key, value) {
+        // Kiểm tra nếu sản phẩm cũ có Id bằng sản phẩm mới
+        if (value['sanPham']['Id'] == sanPham.Id) {
+          // Cập nhật trạng thái của sản phẩm cũ thành 0
+          cartRef
+              .child(key)
+              .child('sanPham')
+              .update({'TrangThai': 0, 'Mau': 0});
+        }
+      });
 
-    //Map chứa thông tin sản phẩm và userID
-    Map<String, dynamic> cartItemData = {
-      'userID': userID,
-      'sanPham': {
-        'Id': _chiTietSp!.Id,
-        'Ten': _chiTietSp!.Ten,
-        'SoLuong': _chiTietSp!.SoLuong,
-        'Gia': _chiTietSp!.Gia,
-        'Hinh': _chiTietSp!.Hinh,
-        'Loai': _chiTietSp!.Loai,
-        'Mau': _chiTietSp!.Mau,
-        'MauSac': _chiTietSp!.MauSac,
-        'MoTa': _chiTietSp!.MoTa,
-        'ThongSo': _chiTietSp!.ThongSo,
-        'TrangThai': _chiTietSp!.TrangThai,
-      }
-    };
+      // Tạo một khóa ngẫu nhiên cho mục trong giỏ hàng
+      DatabaseReference newCartItemRef = cartRef.push();
 
-    // Lưu thông tin vào Firebase Realtime Database
-    newCartItemRef.set(cartItemData).then((_) {
-      // Thành công
-      print('Thêm vào giỏ hàng thành công');
-    }).catchError((error) {
-      // Xảy ra lỗi
-      print('Lỗi khi thêm vào giỏ hàng: $error');
+      // Map chứa thông tin sản phẩm và userID
+      Map<String, dynamic> cartItemData = {
+        'userID': userID,
+        'sanPham': {
+          'Id': sanPham.Id,
+          'Ten': sanPham.Ten,
+          'SoLuong': sanPham.SoLuong,
+          'Gia': sanPham.Gia,
+          'Hinh': sanPham.Hinh,
+          'Loai': sanPham.Loai,
+          'Mau': sanPham.Mau,
+          'MauSac': sanPham.MauSac,
+          'MoTa': sanPham.MoTa,
+          'ThongSo': sanPham.ThongSo,
+          'TrangThai': sanPham.TrangThai,
+          'GiamGia': sanPham.GiamGia
+        }
+      };
+
+      // Lưu thông tin vào Firebase Realtime Database
+      newCartItemRef.set(cartItemData).then((_) {
+        // Thành công
+        print('Thêm vào giỏ hàng thành công');
+      }).catchError((error) {
+        // Xảy ra lỗi
+        print('Lỗi khi thêm vào giỏ hàng: $error');
+      });
     });
   }
 
   //
   void _ThemVaMua_UserID() {
-    // Kiểm tra xem sản phẩm đã được thêm vào giỏ hàng chưa
-    bool isProductAdded =
-        cartItems.any((product) => product.Id == _gioHang!.Id);
+    // Tạo đối tượng SanPham từ thông tin chi tiết sản phẩm
+    SanPham currentProduct = SanPham(
+      GiamGia: _chiTietSp!.GiamGia,
+      Id: _chiTietSp!.Id,
+      Ten: _chiTietSp!.Ten,
+      SoLuong: _chiTietSp!.SoLuong,
+      Gia: _chiTietSp!.Gia,
+      Hinh: _chiTietSp!.Hinh,
+      Loai: _chiTietSp!.Loai,
+      Mau: _chiTietSp!.Mau,
+      MauSac: _chiTietSp!.MauSac,
+      MoTa: _chiTietSp!.MoTa,
+      ThongSo: _chiTietSp!.ThongSo,
+      TrangThai: _chiTietSp!.TrangThai,
+    );
 
-    if (!isProductAdded) {
-      // Tạo đối tượng SanPham từ thông tin chi tiết sản phẩm
-      GioHang currentProduct = GioHang(
-        Id: _gioHang!.Id,
-        Ten: _gioHang!.Ten,
-        SoLuong: _gioHang!.SoLuong,
-        Gia: _gioHang!.Gia,
-        Hinh: _gioHang!.Hinh,
-        Loai: _gioHang!.Loai,
-        Mau: _gioHang!.Mau,
-        MauSac: _gioHang!.MauSac,
-        MoTa: _gioHang!.MoTa,
-        ThongSo: _gioHang!.ThongSo,
-        TrangThai: _gioHang!.TrangThai,
-      );
-
-      // Thêm sản phẩm vào giỏ hàng và thanh toán
-      //   cartItems.add(currentProduct);
-      // payItems.add(currentProduct);
-      _addToCartUserID(currentProduct);
-    } else {
-      // Sản phẩm đã tồn tại trong giỏ hàng, cập nhật số lượng
-      int index = cartItems.indexWhere((product) => product.Id == _gioHang!.Id);
-      if (index != -1) {
-        cartItems[index].SoLuong = _gioHang!.SoLuong;
-        //payItems[index].SoLuong = _chiTietSp!.SoLuong;
-      }
-    }
+    _addToCartForUserID(currentProduct);
   }
 
 //Cập nhật màu được chọn
@@ -267,7 +266,7 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                                               },
                                               icon: const Icon(
                                                   Icons.remove_circle_outline)),
-                                          Text((_chiTietSp?.SoLuong ?? 0)
+                                          Text((_chiTietSp?.SoLuong ?? 1)
                                               .toString()),
                                           IconButton(
                                             onPressed: () {
@@ -415,7 +414,7 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                                                 BorderRadius.circular(5))),
                                     onPressed: () {
                                       _ThemVaMua();
-                                      _addToCartForUserID();
+                                      _ThemVaMua_UserID();
                                     },
                                     child: const Text(
                                       "Thêm vào giỏ hàng",
@@ -485,9 +484,8 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => gioHang_Screen(
-                                          cartItems: cartItems,
-                                        )));
+                                    builder: (context) =>
+                                        const gioHang_Screen()));
                           },
                           icon: const Icon(
                             Icons.shopping_bag_outlined,

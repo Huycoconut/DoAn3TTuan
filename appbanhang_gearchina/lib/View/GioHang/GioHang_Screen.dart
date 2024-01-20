@@ -1,3 +1,5 @@
+import 'package:appbanhang_gearchina/View/GioHang/data_Giohang.dart';
+import 'package:appbanhang_gearchina/View/ThanhToan/SpThanhToan.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
@@ -7,40 +9,23 @@ import 'package:appbanhang_gearchina/View/SanPham/data_SanPham.dart';
 import 'package:appbanhang_gearchina/View/ThanhToan/ThanhToan_Screen.dart';
 
 class gioHang_Screen extends StatefulWidget {
-  final List<SanPham> cartItems;
-
-  const gioHang_Screen({super.key, required this.cartItems});
+  const gioHang_Screen({super.key});
 
   @override
   State<gioHang_Screen> createState() => _gioHang_ScreenState();
 }
 
 class _gioHang_ScreenState extends State<gioHang_Screen> {
-  //List<SanPham> cartItems = [];
-  List<SanPham> selectedItems = [];
-  List<SanPham> cartItems = CartItems.cartItems;
-  bool _isButtonEnabled = false;
-
+  List<SanPham> selectedProducts = [];
+  SanPham? _chiTietSp;
   @override
   void initState() {
     super.initState();
-    _loadCartItems();
-    _loadCartItems_TrongGio();
   }
 
-  void _loadCartItems() {
-    setState(() {
-      cartItems = GioHang_CRUD.HienSpTrongGio();
-    });
-  }
+  bool isSelected = false;
 
-  //Load sản phẩm
-  void _loadCartItems_TrongGio() {
-    Cart cart = Cart();
-    setState(() {
-      cartItems = Cartlocal.cartItems;
-    });
-  }
+  List<bool> isCheckedList = [];
 
   //Xóa sản phẩm
   void _capNhatTrangThaiSp(String productId, String newStatus) {
@@ -50,12 +35,51 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
   }
 
 //
+  void _chuyenTrangThai_Mau(String productId, String newMau) {
+    final productRef =
+        FirebaseDatabase.instance.ref("GioHang/$productId/sanPham/Mau");
+    productRef.set(newMau);
+  }
+
+//
+  void _thanhToanSp() {
+    String? userId;
+    if (FirebaseAuth.instance.currentUser != null) {
+      userId = FirebaseAuth.instance.currentUser?.uid;
+    }
+    final ref = FirebaseDatabase.instance.ref("GioHang");
+
+    final refg = FirebaseDatabase.instance.ref("GioHang");
+    ref.orderByChild("userID").equalTo(userId).onValue.listen((event) {
+      final data = event.snapshot.value as Map<dynamic, dynamic>?;
+      if (data != null) {
+        data.forEach((key, value) {
+          final productData = value as Map<dynamic, dynamic>;
+          if (productData["sanPham"]["Mau"] == "1") {
+            final product = SanPham(
+              GiamGia: _chiTietSp!.GiamGia,
+              Id: _chiTietSp!.Id,
+              Ten: _chiTietSp!.Ten,
+              SoLuong: _chiTietSp!.SoLuong,
+              Gia: _chiTietSp!.Gia,
+              Hinh: _chiTietSp!.Hinh,
+              Loai: _chiTietSp!.Loai,
+              Mau: _chiTietSp!.Mau,
+              MauSac: _chiTietSp!.MauSac,
+              MoTa: _chiTietSp!.MoTa,
+              ThongSo: _chiTietSp!.ThongSo,
+              TrangThai: _chiTietSp!.TrangThai,
+            );
+            selectedProducts.add(product);
+          }
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-
     var media = MediaQuery.of(context).size;
-    _isButtonEnabled = selectedItems.isNotEmpty;
 
     String? userId;
     if (FirebaseAuth.instance.currentUser != null) {
@@ -83,112 +107,126 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
                     return SingleChildScrollView(
                       child: Column(
                         children: [
-                          Container(
-                            margin: const EdgeInsets.only(bottom: 15),
-                            padding: const EdgeInsets.only(bottom: 15),
-                            decoration: const BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(
-                                width: 1,
-                                color: Colors.grey,
-                              )),
-                            ),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    
-                                    Checkbox(
-                                      value: _isButtonEnabled,
-                                      onChanged: (value) {
-                                        //Kiểm tra nếu check sản phẩm
-                                        setState(() {
-                                         
-                                        });
-                                      
-                                      },
-                                    ),
-                                    Column(
-                                      children: [
-                                        Image.network(
-                                          snapshot
-                                              .child('sanPham')
-                                              .child('Hinh')
-                                              .value
-                                              .toString(),
-                                          width: media.width / 4.23,
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          snapshot
-                                              .child('sanPham')
-                                              .child('Ten')
-                                              .value
-                                              .toString(),
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                            "Số lượng: ${snapshot.child('sanPham').child('SoLuong').value.toString()}"),
-                                        const Text(
-                                            "Màu: ${/* sanPham.MauSac == 0 ? "Xám" : sanPham.MauSac == 1 ? "Đen" : */ "Bạc"}"),
-                                        Row(
-                                          children: [
-                                            const Text(
-                                              "₫2000000 ",
-                                              style: TextStyle(
-                                                decoration:
-                                                    TextDecoration.lineThrough,
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.grey,
-                                              ),
-                                            ),
-                                            Text(
-                                              snapshot
-                                                  .child('sanPham')
-                                                  .child('Gia')
-                                                  .value
-                                                  .toString(),
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.redAccent),
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                    IconButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            final productID = snapshot.key;
-                                            final TrangThaiHienTai = snapshot
-                                                .child('sanPham')
-                                                .child('TrangThai')
-                                                .value
-                                                .toString();
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                final productID = snapshot.key;
+                                final TrangThaiHienTai = snapshot
+                                    .child('sanPham')
+                                    .child('Mau')
+                                    .value
+                                    .toString();
 
-                                            final newTrangThai =
-                                                TrangThaiHienTai == '1'
-                                                    ? '0'
-                                                    : '1';
-                                            _capNhatTrangThaiSp(
-                                                productID!, newTrangThai);
-                                          });
-                                        },
-                                        icon: const Icon(
-                                          Icons.restore_from_trash,
-                                          color: Colors.redAccent,
-                                        ))
-                                  ],
-                                ),
-                              ],
+                                final newMau =
+                                    TrangThaiHienTai == '1' ? '0' : '1';
+                                _chuyenTrangThai_Mau(productID!, newMau);
+                              });
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(bottom: 15),
+                              padding: const EdgeInsets.only(bottom: 15),
+                              decoration: snapshot
+                                          .child('sanPham')
+                                          .child('Mau')
+                                          .value
+                                          .toString() ==
+                                      '1'
+                                  ? BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors.green,
+                                        width: 2.0,
+                                      ),
+                                    )
+                                  : null,
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Column(
+                                        children: [
+                                          Image.network(
+                                            snapshot
+                                                .child('sanPham')
+                                                .child('Hinh')
+                                                .value
+                                                .toString(),
+                                            width: media.width / 4.23,
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            snapshot
+                                                .child('sanPham')
+                                                .child('Ten')
+                                                .value
+                                                .toString(),
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                              "Số lượng: ${snapshot.child('sanPham').child('SoLuong').value.toString()}"),
+                                          const Text(
+                                              "Màu: ${/* sanPham.MauSac == 0 ? "Xám" : sanPham.MauSac == 1 ? "Đen" : */ "Bạc"}"),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                  snapshot
+                                                      .child('sanPham')
+                                                      .child('GiamGia')
+                                                      .value
+                                                      .toString(),
+                                                  style: const TextStyle(
+                                                    decoration: TextDecoration
+                                                        .lineThrough,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.grey,
+                                                  )),
+                                              Text(
+                                                snapshot
+                                                    .child('sanPham')
+                                                    .child('Gia')
+                                                    .value
+                                                    .toString(),
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.redAccent),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                      IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              final productID = snapshot.key;
+                                              final TrangThaiHienTai = snapshot
+                                                  .child('sanPham')
+                                                  .child('TrangThai')
+                                                  .value
+                                                  .toString();
+
+                                              final newTrangThai =
+                                                  TrangThaiHienTai == '1'
+                                                      ? '0'
+                                                      : '1';
+                                              _capNhatTrangThaiSp(
+                                                  productID!, newTrangThai);
+                                            });
+                                          },
+                                          icon: const Icon(
+                                            Icons.restore_from_trash,
+                                            color: Colors.redAccent,
+                                          ))
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ],
@@ -208,17 +246,14 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            onPressed: _isButtonEnabled
-                ? () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            thanhToan_Screen(payItems: selectedItems),
-                      ),
-                    );
-                  }
-                : null,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SpThanhToan(payItems: selectedProducts),
+                ),
+              );
+            },
             child: const Text(
               "Thanh toán",
               style: TextStyle(color: Colors.white, fontSize: 17),
