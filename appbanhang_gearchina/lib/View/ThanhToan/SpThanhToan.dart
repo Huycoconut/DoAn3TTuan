@@ -20,11 +20,6 @@ class _SpThanhToanState extends State<SpThanhToan> {
   bool _isPress = true;
 
   List<SanPham> cartItems = [];
-  @override
-  void initState() {
-    // TODO: implement initState
-    //  _tingTongThanhToan();
-  }
 
   void _createHoaDon() {
     User? user = FirebaseAuth.instance.currentUser;
@@ -96,30 +91,34 @@ class _SpThanhToanState extends State<SpThanhToan> {
     });
   }
 
-  void _tingTongThanhToan() {
-    final userId = FirebaseAuth.instance.currentUser?.uid;
-    final gioHangRef = FirebaseDatabase.instance.reference().child("GioHang");
+  final userId = FirebaseAuth.instance.currentUser?.uid;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
+  final gioHangRef = FirebaseDatabase.instance.ref().child("GioHang");
+  void tingTongThanhToan() {
     gioHangRef.orderByChild("userId").equalTo(userId).onValue.listen((event) {
-      final data = event.snapshot.value as Map<dynamic, dynamic>?;
-      if (data != null) {
-        final tongThanhToan = data.values
-            .where((item) => item["TrangThai"] == 1)
-            .map<double>((item) {
-          final soLuong = item["SoLuong"];
-          final gia = item["Gia"];
-          return soLuong * gia;
-        }).reduce((value, element) => value + element);
+      final data = event.snapshot.value as Map<dynamic, dynamic>;
+      final tongThanhToan = data.values
+          .where((item) => item["TrangThai"] == 1)
+          .map<double>((item) {
+        final soLuong = item["SoLuong"];
+        final gia = item["Gia"];
+        return soLuong * gia;
+      }).reduce((value, element) => value + element);
 
-        setState(() {
-          _TongTien = tongThanhToan;
-        });
-      }
+      setState(() {
+        _TongTien = tongThanhToan;
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    //    tingTongThanhToan();
     var media = MediaQuery.of(context).size;
     double totalPrice = 0;
 
@@ -179,7 +178,7 @@ class _SpThanhToanState extends State<SpThanhToan> {
                             style: const TextStyle(
                                 fontWeight: FontWeight.w300, fontSize: 12),
                           ),
-                          Text( 
+                          Text(
                             snapshot.child('DiaChi').value.toString(),
                             style: const TextStyle(
                                 fontWeight: FontWeight.w300, fontSize: 12),

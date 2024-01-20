@@ -36,8 +36,7 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
 
 //
   void _chuyenTrangThai_Mau(String productId, String newMau) {
-    final productRef =
-        FirebaseDatabase.instance.ref("GioHang/$productId/Mau");
+    final productRef = FirebaseDatabase.instance.ref("GioHang/$productId/Mau");
     productRef.set(newMau);
   }
 
@@ -105,6 +104,8 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
                           GestureDetector(
                             onTap: () {
                               setState(() {
+                                isSelected = !isSelected;
+                                print(isSelected);
                                 final productID = snapshot.key;
                                 final TrangThaiHienTai =
                                     snapshot.child('Mau').value.toString();
@@ -187,22 +188,27 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
                                         ],
                                       ),
                                       IconButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              final productID = snapshot.key;
-                                              final TrangThaiHienTai = snapshot
-                                                  .child('TrangThai')
-                                                  .value
-                                                  .toString();
+                                          onPressed: isSelected == false
+                                              ? () {
+                                                  setState(() {
+                                                    final productID =
+                                                        snapshot.key;
+                                                    final TrangThaiHienTai =
+                                                        snapshot
+                                                            .child('TrangThai')
+                                                            .value
+                                                            .toString();
 
-                                              final newTrangThai =
-                                                  TrangThaiHienTai == '1'
-                                                      ? '0'
-                                                      : '1';
-                                              _capNhatTrangThaiSp(
-                                                  productID!, newTrangThai);
-                                            });
-                                          },
+                                                    final newTrangThai =
+                                                        TrangThaiHienTai == '1'
+                                                            ? '0'
+                                                            : '1';
+                                                    _capNhatTrangThaiSp(
+                                                        productID!,
+                                                        newTrangThai);
+                                                  });
+                                                }
+                                              : null,
                                           icon: const Icon(
                                             Icons.restore_from_trash,
                                             color: Colors.redAccent,
@@ -230,14 +236,17 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SpThanhToan(payItems: selectedProducts),
-                ),
-              );
-            },
+            onPressed: isSelected
+                ? () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            SpThanhToan(payItems: selectedProducts),
+                      ),
+                    );
+                  }
+                : null,
             child: const Text(
               "Thanh toán",
               style: TextStyle(color: Colors.white, fontSize: 17),

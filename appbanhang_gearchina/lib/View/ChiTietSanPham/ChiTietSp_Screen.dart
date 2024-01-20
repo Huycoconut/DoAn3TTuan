@@ -103,13 +103,13 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
     DatabaseReference cartRef =
         FirebaseDatabase.instance.ref().child('GioHang');
 
-      // Kiểm tra xem sản phẩm cũ đã tồn tại trong giỏ hàng hay chưa
-  bool isProductAdded = cartItems.any((item) => item.Id == product.Id);
-  if (isProductAdded) {
-    // Cập nhật trạng thái của sản phẩm cũ thành 0
-    _updateProductStatus(product.Id);
-  }
-  
+    // Kiểm tra xem sản phẩm cũ đã tồn tại trong giỏ hàng hay chưa
+    bool isProductAdded = cartItems.any((item) => item.Id == product.Id);
+    if (isProductAdded) {
+      // Cập nhật trạng thái của sản phẩm cũ thành 0
+      _updateProductStatus(product.Id);
+    }
+
     // Tạo ID duy nhất cho sản phẩm trong giỏ hàng
     String? cartItemId = cartRef.push().key;
 
@@ -129,13 +129,15 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
       'GiamGia': product.GiamGia
     });
   }
+
   //
-  void _updateProductStatus(String productId) {
-  DatabaseReference productRef = FirebaseDatabase.instance.ref().child('SanPham').child(productId);
-  productRef.update({
-    'TrangThai': 0,
-  });
-}
+  void _updateProductStatus(int index) {
+    DatabaseReference productRef =
+        FirebaseDatabase.instance.ref().child('GioHang').child('$index');
+    productRef.update({
+      'TrangThai': 0,
+    });
+  }
 
   void _ThemVaMua_UserID() {
     // Kiểm tra xem sản phẩm đã được thêm vào giỏ hàng chưa
@@ -410,6 +412,14 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                                     onPressed: () {
                                       // _ThemVaMua();
                                       _ThemVaMua_UserID();
+
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content:
+                                              Text("Thêm sản phẩm thành công!"),
+                                        ),
+                                      );
                                     },
                                     child: const Text(
                                       "Thêm vào giỏ hàng",
