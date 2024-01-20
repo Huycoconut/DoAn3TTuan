@@ -28,7 +28,7 @@ class _Load_SanPhamState extends State<Load_SanPham> {
     // TODO: implement initState
     dbref.onValue.listen((event) {
       //Khoa : them kiem tra mounted de khong bi xung dot khi dang nhap
-      if (this.mounted) {
+      if (mounted) {
         setState(() {
           _listSanPham = event.snapshot.children.map((snapshot) {
             return SanPham.fromSnapshot(snapshot);
@@ -37,6 +37,7 @@ class _Load_SanPhamState extends State<Load_SanPham> {
       }
     });
   }
+
   //
   void _updateData_SoLuong_BanDau(int index) {
     User? user = FirebaseAuth.instance.currentUser;
@@ -83,7 +84,7 @@ class _Load_SanPhamState extends State<Load_SanPham> {
               return GestureDetector(
                 onTap: () {
                   setState(() {
-                     _updateData_SoLuong_BanDau(index);
+                    _updateData_SoLuong_BanDau(index);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -91,6 +92,7 @@ class _Load_SanPhamState extends State<Load_SanPham> {
                                 sanPham: _listSanPham[index],
                               )),
                     );
+                    _updateData_SoLuong_BanDau(index);
                   });
                 },
                 child: Container(

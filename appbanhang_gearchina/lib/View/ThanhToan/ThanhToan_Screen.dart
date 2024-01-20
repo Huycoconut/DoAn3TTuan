@@ -286,7 +286,8 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold),
                                 ),
-                                const Text("Màu: xanh"),
+                                Text(
+                                    "Màu:${sanPham.MauSac == 0 ? "Xám" : sanPham.MauSac == 1 ? "Đen" : "Bạc"}  "),
                                 Row(
                                   children: [
                                     Text(

@@ -50,7 +50,7 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
     final ref = FirebaseDatabase.instance.ref("GioHang");
 
     final refg = FirebaseDatabase.instance.ref("GioHang");
-    ref.orderByChild("userID").equalTo(userId).onValue.listen((event) {
+    ref.orderByChild("userId").equalTo(userId).onValue.listen((event) {
       final data = event.snapshot.value as Map<dynamic, dynamic>?;
       if (data != null) {
         data.forEach((key, value) {
@@ -97,13 +97,8 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
             child: FirebaseAnimatedList(
                 query: ref,
                 itemBuilder: (context, snapshot, animation, index) {
-                  if (snapshot.child('userID').value.toString() == userId &&
-                      snapshot
-                              .child('sanPham')
-                              .child('TrangThai')
-                              .value
-                              .toString() ==
-                          '1') {
+                  if (snapshot.child('userId').value.toString() == userId &&
+                      snapshot.child('TrangThai').value.toString() == '1') {
                     return SingleChildScrollView(
                       child: Column(
                         children: [
@@ -111,11 +106,8 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
                             onTap: () {
                               setState(() {
                                 final productID = snapshot.key;
-                                final TrangThaiHienTai = snapshot
-                                    .child('sanPham')
-                                    .child('Mau')
-                                    .value
-                                    .toString();
+                                final TrangThaiHienTai =
+                                    snapshot.child('Mau').value.toString();
 
                                 final newMau =
                                     TrangThaiHienTai == '1' ? '0' : '1';
@@ -125,19 +117,15 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
                             child: Container(
                               margin: const EdgeInsets.only(bottom: 15),
                               padding: const EdgeInsets.only(bottom: 15),
-                              decoration: snapshot
-                                          .child('sanPham')
-                                          .child('Mau')
-                                          .value
-                                          .toString() ==
-                                      '1'
-                                  ? BoxDecoration(
-                                      border: Border.all(
-                                        color: Colors.green,
-                                        width: 2.0,
-                                      ),
-                                    )
-                                  : null,
+                              decoration:
+                                  snapshot.child('Mau').value.toString() == '1'
+                                      ? BoxDecoration(
+                                          border: Border.all(
+                                            color: Colors.green,
+                                            width: 2.0,
+                                          ),
+                                        )
+                                      : null,
                               child: Column(
                                 children: [
                                   Row(
@@ -148,7 +136,6 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
                                         children: [
                                           Image.network(
                                             snapshot
-                                                .child('sanPham')
                                                 .child('Hinh')
                                                 .value
                                                 .toString(),
@@ -162,7 +149,6 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
                                         children: [
                                           Text(
                                             snapshot
-                                                .child('sanPham')
                                                 .child('Ten')
                                                 .value
                                                 .toString(),
@@ -170,14 +156,14 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
                                                 fontWeight: FontWeight.bold),
                                           ),
                                           Text(
-                                              "Số lượng: ${snapshot.child('sanPham').child('SoLuong').value.toString()}"),
-                                          const Text(
-                                              "Màu: ${/* sanPham.MauSac == 0 ? "Xám" : sanPham.MauSac == 1 ? "Đen" : */ "Bạc"}"),
+                                              "Số lượng: ${snapshot.child('SoLuong').value.toString()}"),
+                                          Text(
+                                            "Màu: ${snapshot.child('MauSac').child('TenMau').child('TrangThai').value.toString() == '0' ? "Xám" : snapshot.child('MauSac').child('TenMau').child('TrangThai').value.toString() == '1' ? "Đen" : "Trắng"}",
+                                          ),
                                           Row(
                                             children: [
                                               Text(
                                                   snapshot
-                                                      .child('sanPham')
                                                       .child('GiamGia')
                                                       .value
                                                       .toString(),
@@ -189,7 +175,6 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
                                                   )),
                                               Text(
                                                 snapshot
-                                                    .child('sanPham')
                                                     .child('Gia')
                                                     .value
                                                     .toString(),
@@ -206,7 +191,6 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
                                             setState(() {
                                               final productID = snapshot.key;
                                               final TrangThaiHienTai = snapshot
-                                                  .child('sanPham')
                                                   .child('TrangThai')
                                                   .value
                                                   .toString();

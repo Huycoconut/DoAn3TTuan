@@ -15,10 +15,16 @@ class SpThanhToan extends StatefulWidget {
 }
 
 class _SpThanhToanState extends State<SpThanhToan> {
+  // ignore: non_constant_identifier_names
   double _TongTien = 0;
   bool _isPress = true;
 
   List<SanPham> cartItems = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+    //  _tingTongThanhToan();
+  }
 
   void _createHoaDon() {
     User? user = FirebaseAuth.instance.currentUser;
@@ -94,30 +100,22 @@ class _SpThanhToanState extends State<SpThanhToan> {
     final userId = FirebaseAuth.instance.currentUser?.uid;
     final gioHangRef = FirebaseDatabase.instance.reference().child("GioHang");
 
-    double tongThanhToan = 0;
-
     gioHangRef.orderByChild("userID").equalTo(userId).onValue.listen((event) {
       final data = event.snapshot.value as Map<dynamic, dynamic>?;
       if (data != null) {
-        data.forEach((key, value) {
-          final sanPhamData = value["sanPham"];
-          final soLuong = sanPhamData["SoLuong"];
-          final gia = sanPhamData["Gia"];
-          final thanhToan = soLuong * gia;
-          tongThanhToan += thanhToan;
+        final tongThanhToan = data.values
+            .where((item) => item["sanPham"]["TrangThai"] == 1)
+            .map<double>((item) {
+          final soLuong = item["sanPham"]["SoLuong"];
+          final gia = item["sanPham"]["Gia"];
+          return soLuong * gia;
+        }).reduce((value, element) => value + element);
+
+        setState(() {
+          _TongTien = tongThanhToan;
         });
       }
-
-      setState(() {
-        _TongTien = tongThanhToan;
-      });
     });
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
   }
 
   @override
@@ -222,68 +220,62 @@ class _SpThanhToanState extends State<SpThanhToan> {
                   if (snapshot.child('userID').value.toString() == userId &&
                       snapshot.child('sanPham').child('Mau').value.toString() ==
                           '1') {
-                    return GestureDetector(
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 15),
-                        color: Colors.amber,
-                        padding: const EdgeInsets.only(bottom: 15),
-                        child: Column(
+                    return Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            Column(
                               children: [
-                                Column(
-                                  children: [
-                                    Image.network(
-                                      snapshot
-                                          .child('sanPham')
-                                          .child('Hinh')
-                                          .value
-                                          .toString(),
-                                      width: media.width / 4.23,
-                                    ),
-                                  ],
+                                Image.network(
+                                  snapshot
+                                      .child('sanPham')
+                                      .child('Hinh')
+                                      .value
+                                      .toString(),
+                                  width: media.width / 4.23,
                                 ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  snapshot
+                                      .child('sanPham')
+                                      .child('Ten')
+                                      .value
+                                      .toString(),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  "Màu: ${snapshot.child('sanPham').child('MauSac').child('TenMau').child('TrangThai').value.toString() == '0' ? "Xám" : snapshot.child('sanPham').child('MauSac').child('TenMau').child('TrangThai').value.toString() == '1' ? "Đen" : "Trắng"}",
+                                ),
+                                Row(
                                   children: [
                                     Text(
                                       snapshot
                                           .child('sanPham')
-                                          .child('Ten')
+                                          .child('Gia')
                                           .value
                                           .toString(),
                                       style: const TextStyle(
-                                          fontWeight: FontWeight.bold),
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.redAccent),
                                     ),
-                                    const Text(
-                                        "Màu: ${/* sanPham.MauSac == 0 ? "Xám" : sanPham.MauSac == 1 ? "Đen" : */ "Bạc"}"),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          snapshot
-                                              .child('sanPham')
-                                              .child('Gia')
-                                              .value
-                                              .toString(),
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.redAccent),
-                                        ),
-                                        const SizedBox(
-                                          width: 150,
-                                        ),
-                                        Text(
-                                            "x${snapshot.child('sanPham').child('SoLuong').value.toString()}"),
-                                      ],
-                                    )
+                                    const SizedBox(
+                                      width: 150,
+                                    ),
+                                    Text(
+                                        "x${snapshot.child('sanPham').child('SoLuong').value.toString()}"),
                                   ],
-                                ),
+                                )
                               ],
                             ),
                           ],
                         ),
-                      ),
+                      ],
                     );
                   } else {
                     return Container();
@@ -291,7 +283,7 @@ class _SpThanhToanState extends State<SpThanhToan> {
                 }),
           ),
           const SizedBox(
-            height: 200,
+            height: 100,
           ),
           Container(
             alignment: Alignment.topLeft,
