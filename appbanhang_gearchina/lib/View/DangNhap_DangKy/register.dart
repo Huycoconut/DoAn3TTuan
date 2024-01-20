@@ -281,6 +281,26 @@ class _RegisterState extends State<Register> {
               ElevatedButton(
                 onPressed: () {
                   // Xử lý sự kiện khi nút được nhấn
+                  if(email.text.isEmpty || matkhau.text.isEmpty || re_pass.text.isEmpty || hoten.text.isEmpty || sdt.text.isEmpty || diachi.text.isEmpty){
+                    setState(() {
+                      _errorMessage = 'Vui lòng nhập đầy đủ thông tin!';
+                    });
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text(_errorMessage),
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text("Quay lại"))
+                            ],
+                          );
+                        });
+                    return;
+                  }
                   SignUp();
                 },
                 style: ElevatedButton.styleFrom(
