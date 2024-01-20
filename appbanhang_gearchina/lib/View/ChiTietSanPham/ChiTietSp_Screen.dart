@@ -97,57 +97,78 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
     });
   }
 
- void _addToCart(SanPham product) {
-  DatabaseReference cartRef = FirebaseDatabase.instance.reference().child('GioHang');
-  String? cartItemId = cartRef.push().key; // Tạo ID duy nhất cho sản phẩm trong giỏ hàng
+  void _addToCart(SanPham product) {
+    User? user = FirebaseAuth.instance.currentUser;
+    String userID = user!.uid;
+    DatabaseReference cartRef =
+        FirebaseDatabase.instance.ref().child('GioHang');
 
-  cartRef.child(cartItemId!).set({
-    'userId': FirebaseAuth.instance.currentUser!.uid,
-'Id': product.Id,
-          'Ten': product.Ten,
-          'SoLuong': product.SoLuong,
-          'Gia': product.Gia,
-          'Hinh': product.Hinh,
-          'Loai': product.Loai,
-          'Mau': product.Mau,
-          'MauSac': product.MauSac,
-          'MoTa': product.MoTa,
-          'ThongSo': product.ThongSo,
-          'TrangThai': product.TrangThai,
-          'GiamGia': product.GiamGia
+      // Kiểm tra xem sản phẩm cũ đã tồn tại trong giỏ hàng hay chưa
+  bool isProductAdded = cartItems.any((item) => item.Id == product.Id);
+  if (isProductAdded) {
+    // Cập nhật trạng thái của sản phẩm cũ thành 0
+    _updateProductStatus(product.Id);
+  }
+  
+    // Tạo ID duy nhất cho sản phẩm trong giỏ hàng
+    String? cartItemId = cartRef.push().key;
+
+    cartRef.child(cartItemId!).set({
+      'userId': FirebaseAuth.instance.currentUser!.uid,
+      'Id': product.Id,
+      'Ten': product.Ten,
+      'SoLuong': product.SoLuong,
+      'Gia': product.Gia,
+      'Hinh': product.Hinh,
+      'Loai': product.Loai,
+      'Mau': product.Mau,
+      'MauSac': product.MauSac,
+      'MoTa': product.MoTa,
+      'ThongSo': product.ThongSo,
+      'TrangThai': product.TrangThai,
+      'GiamGia': product.GiamGia
+    });
+  }
+  //
+  void _updateProductStatus(String productId) {
+  DatabaseReference productRef = FirebaseDatabase.instance.ref().child('SanPham').child(productId);
+  productRef.update({
+    'TrangThai': 0,
   });
 }
-void  _ThemVaMua_UserID() {
-  // Kiểm tra xem sản phẩm đã được thêm vào giỏ hàng chưa
-  bool isProductAdded = cartItems.any((item) => item.Id == _chiTietSp!.Id);
 
-  if (!isProductAdded) {
-    // Tạo đối tượng SanPham từ thông tin chi tiết sản phẩm
-    SanPham currentProduct = SanPham(
-      GiamGia: _chiTietSp!.GiamGia,
-      Id: _chiTietSp!.Id,
-      Ten: _chiTietSp!.Ten,
-      SoLuong: _chiTietSp!.SoLuong,
-      Gia: _chiTietSp!.Gia,
-      Hinh: _chiTietSp!.Hinh,
-      Loai: _chiTietSp!.Loai,
-      Mau: _chiTietSp!.Mau,
-      MauSac: _chiTietSp!.MauSac,
-      MoTa: _chiTietSp!.MoTa,
-      ThongSo: _chiTietSp!.ThongSo,
-      TrangThai: _chiTietSp!.TrangThai,
-    );
+  void _ThemVaMua_UserID() {
+    // Kiểm tra xem sản phẩm đã được thêm vào giỏ hàng chưa
+    bool isProductAdded = cartItems.any((item) => item.Id == _chiTietSp!.Id);
 
-    // Thêm sản phẩm vào giỏ hàng
-    _addToCart(currentProduct);
-  } else {
-    // Sản phẩm đã tồn tại trong giỏ hàng, cập nhật số lượng
-    int index = cartItems.indexWhere((item) => item.Id == _chiTietSp!.Id);
-    if (index != -1) {
-      cartItems[index].SoLuong = _chiTietSp!.SoLuong;
+    if (!isProductAdded) {
+      // Tạo đối tượng SanPham từ thông tin chi tiết sản phẩm
+      SanPham currentProduct = SanPham(
+        GiamGia: _chiTietSp!.GiamGia,
+        Id: _chiTietSp!.Id,
+        Ten: _chiTietSp!.Ten,
+        SoLuong: _chiTietSp!.SoLuong,
+        Gia: _chiTietSp!.Gia,
+        Hinh: _chiTietSp!.Hinh,
+        Loai: _chiTietSp!.Loai,
+        Mau: _chiTietSp!.Mau,
+        MauSac: _chiTietSp!.MauSac,
+        MoTa: _chiTietSp!.MoTa,
+        ThongSo: _chiTietSp!.ThongSo,
+        TrangThai: _chiTietSp!.TrangThai,
+      );
+
+      // Thêm sản phẩm vào giỏ hàng
+      _addToCart(currentProduct);
+    } else {
+      // Sản phẩm đã tồn tại trong giỏ hàng, cập nhật số lượng
+      int index = cartItems.indexWhere((item) => item.Id == _chiTietSp!.Id);
+      if (index != -1) {
+        cartItems[index].SoLuong = _chiTietSp!.SoLuong;
+      }
     }
   }
-}
+
 //Cập nhật màu được chọn
   bool _isThirdSelected = true;
   bool _isFirstSelected = false;
@@ -388,7 +409,7 @@ void  _ThemVaMua_UserID() {
                                                 BorderRadius.circular(5))),
                                     onPressed: () {
                                       // _ThemVaMua();
-                                     _ThemVaMua_UserID();
+                                      _ThemVaMua_UserID();
                                     },
                                     child: const Text(
                                       "Thêm vào giỏ hàng",

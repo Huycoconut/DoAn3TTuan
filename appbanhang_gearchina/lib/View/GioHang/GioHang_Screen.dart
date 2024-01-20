@@ -30,14 +30,14 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
   //Xóa sản phẩm
   void _capNhatTrangThaiSp(String productId, String newStatus) {
     final productRef =
-        FirebaseDatabase.instance.ref("GioHang/$productId/sanPham/TrangThai");
+        FirebaseDatabase.instance.ref("GioHang/$productId/TrangThai");
     productRef.set(newStatus);
   }
 
 //
   void _chuyenTrangThai_Mau(String productId, String newMau) {
     final productRef =
-        FirebaseDatabase.instance.ref("GioHang/$productId/sanPham/Mau");
+        FirebaseDatabase.instance.ref("GioHang/$productId/Mau");
     productRef.set(newMau);
   }
 

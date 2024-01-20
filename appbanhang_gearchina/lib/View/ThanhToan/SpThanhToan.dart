@@ -100,14 +100,14 @@ class _SpThanhToanState extends State<SpThanhToan> {
     final userId = FirebaseAuth.instance.currentUser?.uid;
     final gioHangRef = FirebaseDatabase.instance.reference().child("GioHang");
 
-    gioHangRef.orderByChild("userID").equalTo(userId).onValue.listen((event) {
+    gioHangRef.orderByChild("userId").equalTo(userId).onValue.listen((event) {
       final data = event.snapshot.value as Map<dynamic, dynamic>?;
       if (data != null) {
         final tongThanhToan = data.values
-            .where((item) => item["sanPham"]["TrangThai"] == 1)
+            .where((item) => item["TrangThai"] == 1)
             .map<double>((item) {
-          final soLuong = item["sanPham"]["SoLuong"];
-          final gia = item["sanPham"]["Gia"];
+          final soLuong = item["SoLuong"];
+          final gia = item["Gia"];
           return soLuong * gia;
         }).reduce((value, element) => value + element);
 
@@ -167,7 +167,7 @@ class _SpThanhToanState extends State<SpThanhToan> {
             child: FirebaseAnimatedList(
                 query: refTK,
                 itemBuilder: (context, snapshot, animation, index) {
-                  if (snapshot.child('userID').value.toString() == userId) {
+                  if (snapshot.child('userId').value.toString() == userId) {
                     return Container(
                       padding: const EdgeInsets.only(left: 23),
                       child: Column(
@@ -179,7 +179,7 @@ class _SpThanhToanState extends State<SpThanhToan> {
                             style: const TextStyle(
                                 fontWeight: FontWeight.w300, fontSize: 12),
                           ),
-                          Text(
+                          Text( 
                             snapshot.child('DiaChi').value.toString(),
                             style: const TextStyle(
                                 fontWeight: FontWeight.w300, fontSize: 12),
@@ -208,18 +208,8 @@ class _SpThanhToanState extends State<SpThanhToan> {
             child: FirebaseAnimatedList(
                 query: ref,
                 itemBuilder: (context, snapshot, animation, index) {
-                  if (snapshot.child('sanPham').exists &&
-                      snapshot.child('sanPham').child('Gia').exists &&
-                      snapshot.child('sanPham').child('SoLuong').exists) {
-                    int price =
-                        snapshot.child('sanPham').child('Gia').value as int;
-                    int quantity =
-                        snapshot.child('sanPham').child('SoLuong').value as int;
-                    totalPrice += price * quantity;
-                  }
-                  if (snapshot.child('userID').value.toString() == userId &&
-                      snapshot.child('sanPham').child('Mau').value.toString() ==
-                          '1') {
+                  if (snapshot.child('userId').value.toString() == userId &&
+                      snapshot.child('Mau').value.toString() == '1') {
                     return Column(
                       children: [
                         Row(
@@ -228,11 +218,7 @@ class _SpThanhToanState extends State<SpThanhToan> {
                             Column(
                               children: [
                                 Image.network(
-                                  snapshot
-                                      .child('sanPham')
-                                      .child('Hinh')
-                                      .value
-                                      .toString(),
+                                  snapshot.child('Hinh').value.toString(),
                                   width: media.width / 4.23,
                                 ),
                               ],
@@ -241,25 +227,17 @@ class _SpThanhToanState extends State<SpThanhToan> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  snapshot
-                                      .child('sanPham')
-                                      .child('Ten')
-                                      .value
-                                      .toString(),
+                                  snapshot.child('Ten').value.toString(),
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold),
                                 ),
                                 Text(
-                                  "Màu: ${snapshot.child('sanPham').child('MauSac').child('TenMau').child('TrangThai').value.toString() == '0' ? "Xám" : snapshot.child('sanPham').child('MauSac').child('TenMau').child('TrangThai').value.toString() == '1' ? "Đen" : "Trắng"}",
+                                  "Màu: ${snapshot.child('MauSac').child('TrangThai').value.toString() == '0' ? "Xám" : snapshot.child('MauSac').child('TrangThai').value.toString() == '1' ? "Đen" : "Trắng"}",
                                 ),
                                 Row(
                                   children: [
                                     Text(
-                                      snapshot
-                                          .child('sanPham')
-                                          .child('Gia')
-                                          .value
-                                          .toString(),
+                                      snapshot.child('Gia').value.toString(),
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: Colors.redAccent),
@@ -268,7 +246,7 @@ class _SpThanhToanState extends State<SpThanhToan> {
                                       width: 150,
                                     ),
                                     Text(
-                                        "x${snapshot.child('sanPham').child('SoLuong').value.toString()}"),
+                                        "x${snapshot.child('SoLuong').value.toString()}"),
                                   ],
                                 )
                               ],
