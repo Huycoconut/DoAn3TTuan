@@ -40,7 +40,8 @@ class _LoginState extends State<Login> {
         );
       } else {
         setState(() {
-          _errorMessage = 'Đăng nhập thất bại. Vui lòng thử lại.';
+          _errorMessage =
+              'Email hoặc mật khẩu không đúng. Vui lòng kiểm tra lại!';
         });
         showDialog(
             context: context,
@@ -60,8 +61,21 @@ class _LoginState extends State<Login> {
     } catch (e) {}
   }
 
+  //kiem tra dn = userid da ton tai hay chua
+  Future<bool> KTUser(String userid_) async {
+    final dbref = FirebaseDatabase.instance.ref().child('TaiKhoan');
+    try {
+      DatabaseEvent event = await dbref.orderByKey().equalTo(userid_).once();
+      DataSnapshot? snapshot = event.snapshot;
+      print(snapshot.value);
+      return snapshot != null && snapshot.value != null;
+    } catch (e) {
+      return false;
+    }
+  }
+
   //dang nhap voi google
-  Future</*UserCredential?*/User?> signInWithGoogle() async {
+  Future<UserCredential?> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       final GoogleSignInAuthentication googleAuth =
@@ -73,21 +87,25 @@ class _LoginState extends State<Login> {
         idToken: googleAuth.idToken,
       );
       final UserCredential authResult = await FirebaseAuth.instance.signInWithCredential(credential);
-      String? userId;
-      if (FirebaseAuth.instance.currentUser != null) {
-        userId = FirebaseAuth.instance.currentUser?.uid;
-      }
+      final String userId = authResult.user!.uid;
       final dbref = FirebaseDatabase.instance.ref().child('TaiKhoan');
-      DatabaseReference newUser_ = dbref.child("$userId");
-
-      newUser_.set({
-        'userID': userId,
-        'email': authResult.user!.email,
-        'DiaChi': authResult.user!.uid,
-        'SĐT': authResult.user!.phoneNumber,
-        'Hoten': authResult.user!.displayName,
-      });
-      //return await FirebaseAuth.instance.signInWithCredential(credential);
+      bool KiemTra = await KTUser(userId);
+      if (!KiemTra) {
+        DatabaseReference newUser_ = dbref.child(userId);
+        newUser_.set({
+          'userID': userId,
+          'email': authResult.user!.email,
+          'DiaChi': authResult.user!.uid,
+          'SĐT': authResult.user!.phoneNumber,
+          'Hoten': authResult.user!.displayName,
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Đăng nhập thành công"),
+          ),
+        );
+        return authResult;
+      }
     } catch (e) {}
     return null;
   }
