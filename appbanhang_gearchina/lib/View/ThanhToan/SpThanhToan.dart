@@ -8,17 +8,18 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 
 class SpThanhToan extends StatefulWidget {
-  SpThanhToan({super.key, required this.payItems});
-  List<SanPham> payItems;
+  const SpThanhToan({super.key});
+/*   List<SanPham> payItems; */
   @override
   State<SpThanhToan> createState() => _SpThanhToanState();
 }
 
 class _SpThanhToanState extends State<SpThanhToan> {
   // ignore: non_constant_identifier_names
-  double _TongTien = 0;
+  final double _TongTien = 0;
   bool _isPress = true;
 
+  List<SanPham> _listSanPham = [];
   List<SanPham> cartItems = [];
 
   void _createHoaDon() {
@@ -31,13 +32,11 @@ class _SpThanhToanState extends State<SpThanhToan> {
 
     // Tạo một hóa đơn mới
     DatabaseReference newHoaDonRef = hoaDonRef.push();
-    newHoaDonRef.set({
-      'UserID': userID,
-      'TongTien': _TongTien,
-    }).then((_) {
+    newHoaDonRef.set(
+        {'UserID': userID, 'TongTien': tongTien, 'TrangThai': 1}).then((_) {
       String? maHD = newHoaDonRef.key;
       //Duyệt các sản phẩm được đặt
-      for (var sanPham in widget.payItems) {
+      for (var sanPham in _listSanPham) {
         DatabaseReference chiTietHDRef =
             FirebaseDatabase.instance.ref('ChiTietHD');
         //Thêm thông tin các sản phẩm được đặt vào ChiTietHD
@@ -96,28 +95,30 @@ class _SpThanhToanState extends State<SpThanhToan> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    tongTien;
+    TinhTien();
   }
 
-  final gioHangRef = FirebaseDatabase.instance.ref().child("GioHang");
-  void tingTongThanhToan() {
-    gioHangRef.orderByChild("userId").equalTo(userId).onValue.listen((event) {
-      final data = event.snapshot.value as Map<dynamic, dynamic>;
-      final tongThanhToan = data.values
-          .where((item) => item["TrangThai"] == 1)
-          .map<double>((item) {
-        final soLuong = item["SoLuong"];
-        final gia = item["Gia"];
-        return soLuong * gia;
-      }).reduce((value, element) => value + element);
-
-      setState(() {
-        _TongTien = tongThanhToan;
-      });
+  double tongTien = 0;
+  //Tính tiền
+  double TinhTien() {
+    final ref = FirebaseDatabase.instance.ref("GioHang");
+    ref.onValue.listen((event) {
+      _listSanPham = event.snapshot.children.map((snapshot) {
+        return SanPham.fromSnapshot(snapshot);
+      }).toList();
     });
+
+    for (var items in _listSanPham) {
+      tongTien = tongTien + (items.Gia * items.SoLuong);
+    }
+    setState(() {});
+    return tongTien;
   }
 
   @override
   Widget build(BuildContext context) {
+    // TinhTien();
     //    tingTongThanhToan();
     var media = MediaQuery.of(context).size;
     double totalPrice = 0;
@@ -127,6 +128,7 @@ class _SpThanhToanState extends State<SpThanhToan> {
       userId = FirebaseAuth.instance.currentUser?.uid;
     }
     final ref = FirebaseDatabase.instance.ref("GioHang");
+
     final refTK = FirebaseDatabase.instance.ref("/TaiKhoan");
     return Scaffold(
       appBar: AppBar(
@@ -166,7 +168,7 @@ class _SpThanhToanState extends State<SpThanhToan> {
             child: FirebaseAnimatedList(
                 query: refTK,
                 itemBuilder: (context, snapshot, animation, index) {
-                  if (snapshot.child('userId').value.toString() == userId) {
+                  if (snapshot.child('userID').value.toString() == userId) {
                     return Container(
                       padding: const EdgeInsets.only(left: 23),
                       child: Column(
@@ -208,7 +210,8 @@ class _SpThanhToanState extends State<SpThanhToan> {
                 query: ref,
                 itemBuilder: (context, snapshot, animation, index) {
                   if (snapshot.child('userId').value.toString() == userId &&
-                      snapshot.child('Mau').value.toString() == '1') {
+                      snapshot.child('Mau').value.toString() == '1' &&
+                      snapshot.child('TrangThai').value.toString() == '1') {
                     return Column(
                       children: [
                         Row(
@@ -345,7 +348,7 @@ class _SpThanhToanState extends State<SpThanhToan> {
                   style: TextStyle(fontSize: 15, color: Colors.grey),
                 ),
                 Text(
-                  '₫$totalPrice',
+                  '${TinhTien()} VNĐ',
                   style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
@@ -354,8 +357,6 @@ class _SpThanhToanState extends State<SpThanhToan> {
               ],
             ),
           ),
-          Text('$_TongTien'),
-          Text("$totalPrice"),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.only(

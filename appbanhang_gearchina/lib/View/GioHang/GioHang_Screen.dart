@@ -8,6 +8,8 @@ import 'package:appbanhang_gearchina/View/GioHang/class_LuuTruSp_TrongGio.dart';
 import 'package:appbanhang_gearchina/View/SanPham/data_SanPham.dart';
 import 'package:appbanhang_gearchina/View/ThanhToan/ThanhToan_Screen.dart';
 
+int dem = 0;
+
 class gioHang_Screen extends StatefulWidget {
   const gioHang_Screen({super.key});
 
@@ -21,6 +23,7 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
   @override
   void initState() {
     super.initState();
+    isSelected;
   }
 
   bool isSelected = false;
@@ -39,9 +42,10 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
     final productRef = FirebaseDatabase.instance.ref("GioHang/$productId/Mau");
     productRef.set(newMau);
   }
+  //
 
 //
-  void _thanhToanSp() {
+/*   void _thanhToanSp() {
     String? userId;
     if (FirebaseAuth.instance.currentUser != null) {
       userId = FirebaseAuth.instance.currentUser?.uid;
@@ -74,7 +78,7 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
         });
       }
     });
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
@@ -104,12 +108,13 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
                           GestureDetector(
                             onTap: () {
                               setState(() {
-                                isSelected = !isSelected;
-                                print(isSelected);
+                                snapshot.child('Mau').value.toString() == '1'
+                                    ? isSelected == false
+                                    : true;
                                 final productID = snapshot.key;
                                 final TrangThaiHienTai =
                                     snapshot.child('Mau').value.toString();
-
+                                TrangThaiHienTai == '1' ? (dem++) : (dem--);
                                 final newMau =
                                     TrangThaiHienTai == '1' ? '0' : '1';
                                 _chuyenTrangThai_Mau(productID!, newMau);
@@ -188,7 +193,7 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
                                         ],
                                       ),
                                       IconButton(
-                                          onPressed: isSelected == false
+                                          onPressed: isSelected == true
                                               ? () {
                                                   setState(() {
                                                     final productID =
@@ -236,13 +241,12 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            onPressed: isSelected
+            onPressed: (dem == 0 ? false : true)
                 ? () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            SpThanhToan(payItems: selectedProducts),
+                        builder: (context) => const SpThanhToan(),
                       ),
                     );
                   }
