@@ -10,6 +10,7 @@ class DB {
 
   final boxSlider = Hive.box('boxSlider');
   getListSlider() {
+    boxSlider.clear();
     refSlider1.onValue.listen((event) {
       listSlider = event.snapshot.children.map((snapshot) {
         return Sliderr.fromSnapshot(snapshot);
