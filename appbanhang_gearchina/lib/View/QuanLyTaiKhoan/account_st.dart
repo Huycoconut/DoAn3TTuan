@@ -7,6 +7,7 @@ import 'package:appbanhang_gearchina/View/DangNhap_DangKy/login.dart';
 import 'package:appbanhang_gearchina/View/Trang_chu/botNav.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:appbanhang_gearchina/View/HoaDon/HoaDon_Screen.dart';
 
 class QuanLytaiKhoan extends StatefulWidget {
   const QuanLytaiKhoan({super.key});
@@ -199,6 +200,10 @@ class _QuanLytaiKhoanState extends State<QuanLytaiKhoan> {
                             ElevatedButton(
                               onPressed: () {
                                 //Đường dẫn form quan lý đơn hàng
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Screen_HoaDon()));
                               },
                               style: ElevatedButton.styleFrom(
                                 minimumSize: const Size(500, 60),
