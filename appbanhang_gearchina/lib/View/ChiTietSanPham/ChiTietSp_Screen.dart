@@ -103,60 +103,41 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
     DatabaseReference cartRef =
         FirebaseDatabase.instance.ref().child('GioHang');
     cartRef.once().then((snapshot) {
-      if (snapshot.snapshot.value != null) {
-        // Tạo ID duy nhất cho sản phẩm trong giỏ hàng
-        String? cartItemId = cartRef.push().key;
+      if (snapshot.snapshot.value != null) {}
+    });
 
-        cartRef.child(cartItemId!).set({
-          'userID': FirebaseAuth.instance.currentUser!.uid,
-          'Id': product.Id,
-          'Ten': product.Ten,
-          'SoLuong': product.SoLuong,
-          'Gia': product.Gia,
-          'Hinh': product.Hinh,
-          'Loai': product.Loai,
-          'Mau': product.Mau,
-          'MauSac': product.MauSac,
-          'MoTa': product.MoTa,
-          'ThongSo': product.ThongSo,
-          'TrangThai': product.TrangThai,
-          'GiamGia': product.GiamGia
-        });
-      } else {
-        cartRef
-            .orderByChild('userId')
-            .equalTo(userID)
-            .once()
-            .then((DatabaseEvent snapshot) {
-          Map<dynamic, dynamic> gioHangData =
-              snapshot.snapshot.value as Map<dynamic, dynamic>;
-          gioHangData.forEach((key, value) {
-            // Kiểm tra nếu sản phẩm cũ có Id bằng sản phẩm mới
-            if (value['Id'] == product.Id) {
-              // Cập nhật trạng thái của sản phẩm cũ thành 0
-              cartRef.child(key).update({'TrangThai': 0});
-            }
-          });
-          // Tạo ID duy nhất cho sản phẩm trong giỏ hàng
-          String? cartItemId = cartRef.push().key;
+    cartRef
+        .orderByChild('userID')
+        .equalTo(userID)
+        .once()
+        .then((DatabaseEvent snapshot) {
+      Map<dynamic, dynamic> gioHangData =
+          snapshot.snapshot.value as Map<dynamic, dynamic>;
+      gioHangData.forEach((key, value) {
+        // Kiểm tra nếu sản phẩm cũ có Id bằng sản phẩm mới
+        if (value['Id'] == product.Id) {
+          // Cập nhật trạng thái của sản phẩm cũ thành 0
+          cartRef.child(key).update({'TrangThai': 0});
+        }
+      });
+      // Tạo ID duy nhất cho sản phẩm trong giỏ hàng
+      String? cartItemId = cartRef.push().key;
 
-          cartRef.child(cartItemId!).set({
-            'userID': FirebaseAuth.instance.currentUser!.uid,
-            'Id': product.Id,
-            'Ten': product.Ten,
-            'SoLuong': product.SoLuong,
-            'Gia': product.Gia,
-            'Hinh': product.Hinh,
-            'Loai': product.Loai,
-            'Mau': product.Mau,
-            'MauSac': product.MauSac,
-            'MoTa': product.MoTa,
-            'ThongSo': product.ThongSo,
-            'TrangThai': product.TrangThai,
-            'GiamGia': product.GiamGia
-          });
-        });
-      }
+      cartRef.child(cartItemId!).set({
+        'userID': FirebaseAuth.instance.currentUser!.uid,
+        'Id': product.Id,
+        'Ten': product.Ten,
+        'SoLuong': product.SoLuong,
+        'Gia': product.Gia,
+        'Hinh': product.Hinh,
+        'Loai': product.Loai,
+        'Mau': product.Mau,
+        'MauSac': product.MauSac,
+        'MoTa': product.MoTa,
+        'ThongSo': product.ThongSo,
+        'TrangThai': product.TrangThai,
+        'GiamGia': product.GiamGia
+      });
     });
   }
 

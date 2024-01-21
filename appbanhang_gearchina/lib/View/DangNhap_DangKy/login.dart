@@ -1,5 +1,6 @@
 import 'package:appbanhang_gearchina/View/DangNhap_DangKy/firebase_auth.dart';
 import 'package:appbanhang_gearchina/View/DangNhap_DangKy/quenMK.dart';
+import 'package:appbanhang_gearchina/View/SanPham/data_SanPham.dart';
 import 'package:appbanhang_gearchina/View/Trang_chu/Home.dart';
 import 'package:appbanhang_gearchina/View/Trang_chu/botNav.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -68,7 +69,7 @@ class _LoginState extends State<Login> {
       DatabaseEvent event = await dbref.orderByKey().equalTo(userid_).once();
       DataSnapshot? snapshot = event.snapshot;
       print(snapshot.value);
-      return snapshot != null && snapshot.value != null;
+      return snapshot.value != null;
     } catch (e) {
       return false;
     }
@@ -86,7 +87,8 @@ class _LoginState extends State<Login> {
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-      final UserCredential authResult = await FirebaseAuth.instance.signInWithCredential(credential);
+      final UserCredential authResult =
+          await FirebaseAuth.instance.signInWithCredential(credential);
       final String userId = authResult.user!.uid;
       final dbref = FirebaseDatabase.instance.ref().child('TaiKhoan');
       bool KiemTra = await KTUser(userId);
@@ -100,7 +102,7 @@ class _LoginState extends State<Login> {
           'Hoten': authResult.user!.displayName,
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text("Đăng nhập thành công"),
           ),
         );
@@ -108,6 +110,32 @@ class _LoginState extends State<Login> {
       }
     } catch (e) {}
     return null;
+  }
+//Huy thêm
+  void _addToCart() {
+    //User? user = FirebaseAuth.instance.currentUser;
+   // String userID = user!;
+    DatabaseReference cartRef =
+        FirebaseDatabase.instance.ref().child('GioHang');
+
+    // Tạo ID duy nhất cho sản phẩm trong giỏ hàng
+    String? cartItemId = cartRef.push().key;
+
+    cartRef.child(cartItemId!).set({
+      'userID':FirebaseAuth.instance.currentUser?.uid,
+      'Id': 1,
+      'Ten': 'iphone',
+      'SoLuong': 1,
+      'Gia': 1,
+      'Hinh': '3',
+      'Loai': '5',
+      'Mau': 7,
+      'MauSac': 2,
+      'MoTa': 'product.MoTa',
+      'ThongSo': 'product.ThongSo',
+      'TrangThai': 0,
+      'GiamGia': 'product.GiamGia'
+    });
   }
 
   @override
@@ -195,7 +223,7 @@ class _LoginState extends State<Login> {
                       onPressed: () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return QuenMK();
+                          return const QuenMK();
                         }));
                       },
                       child: const Text(
@@ -212,6 +240,7 @@ class _LoginState extends State<Login> {
               ElevatedButton(
                 onPressed: () {
                   SignIn();
+                  _addToCart();
                 },
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(500, 60),
