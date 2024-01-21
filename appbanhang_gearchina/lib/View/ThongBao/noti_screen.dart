@@ -1,8 +1,6 @@
 import 'package:appbanhang_gearchina/View/ThongBao/detail_promotion.dart';
-import 'package:appbanhang_gearchina/View/ThongBao/local_notification.dart';
 import 'package:appbanhang_gearchina/View/ThongBao/order.dart';
 import 'package:appbanhang_gearchina/View/ThongBao/promotion.dart';
-import 'package:appbanhang_gearchina/localStorage/local_storage.dart';
 import 'package:flutter/material.dart';
 
 class NotiScreen extends StatefulWidget {
@@ -22,10 +20,6 @@ class _NotiScreenState extends State<NotiScreen> {
           children: [
             GestureDetector(
               onTap: () {
-                // LocalNotifications.showSimpleNotification(
-                //     title: "Khuyến mãi nè",
-                //     body: "Khuyến mãiiiiiiiiiiiiiiiiiiiiiiiiiii",
-                //     payload: "Giảm sau");
                 Navigator.push(
                     context,
                     MaterialPageRoute(

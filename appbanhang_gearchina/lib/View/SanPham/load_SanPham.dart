@@ -2,7 +2,7 @@ import 'package:appbanhang_gearchina/View/ChiTietSanPham/ChiTietSp_Screen.dart';
 import 'package:appbanhang_gearchina/View/SanPham/data_SanPham.dart';
 import 'dart:convert';
 import 'package:appbanhang_gearchina/localStorage/slider.dart';
-import 'package:appbanhang_gearchina/localStorage/local_storage.dart';
+import 'package:appbanhang_gearchina/localStorage/local_storage_slide_show.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';

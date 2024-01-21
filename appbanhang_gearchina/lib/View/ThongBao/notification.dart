@@ -1,12 +1,10 @@
 import 'package:appbanhang_gearchina/main.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 
 class Notification {
   final _firebaseMessaging = FirebaseMessaging.instance;
 
   Future<void> initNotifications() async {
-    // Yêu cầu cấp quyền thông báo
     await _firebaseMessaging.requestPermission();
     initPushNotifications();
   }

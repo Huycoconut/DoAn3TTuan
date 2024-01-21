@@ -10,17 +10,13 @@ class DStenHoaDon {
     required this.DonGia,
     required this.SoLuong,
     required this.TenSanPham,
-  
   });
   factory DStenHoaDon.fromSnapshot(DataSnapshot snapshot) {
-    
     return DStenHoaDon(
-      
       MaHD: snapshot.child('MaHD').value,
       DonGia: snapshot.child('DonGia').value,
       SoLuong: int.parse(snapshot.child('SoLuong').value.toString()),
       TenSanPham: snapshot.child('TenSanPham').value,
-      
     );
   }
   toJson() {}
