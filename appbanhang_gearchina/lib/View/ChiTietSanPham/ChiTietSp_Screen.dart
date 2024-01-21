@@ -102,7 +102,7 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
     String userID = user!.uid;
     DatabaseReference cartRef =
         FirebaseDatabase.instance.ref().child('GioHang');
-
+/* 
     cartRef
         .orderByChild('userId')
         .equalTo(userID)
@@ -110,32 +110,32 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
         .then((DatabaseEvent snapshot) {
       Map<dynamic, dynamic> gioHangData =
           snapshot.snapshot.value as Map<dynamic, dynamic>;
-       gioHangData.forEach((key, value) {
+      gioHangData.forEach((key, value) {
         // Kiểm tra nếu sản phẩm cũ có Id bằng sản phẩm mới
         if (value['Id'] == product.Id) {
           // Cập nhật trạng thái của sản phẩm cũ thành 0
           cartRef.child(key).update({'TrangThai': 0});
         }
-      });
-      // Tạo ID duy nhất cho sản phẩm trong giỏ hàng
-      String? cartItemId = cartRef.push().key;
+      }); */
+    // Tạo ID duy nhất cho sản phẩm trong giỏ hàng
+    String? cartItemId = cartRef.push().key;
 
-      cartRef.child(cartItemId!).set({
-        'userId': FirebaseAuth.instance.currentUser!.uid,
-        'Id': product.Id,
-        'Ten': product.Ten,
-        'SoLuong': product.SoLuong,
-        'Gia': product.Gia,
-        'Hinh': product.Hinh,
-        'Loai': product.Loai,
-        'Mau': product.Mau,
-        'MauSac': product.MauSac,
-        'MoTa': product.MoTa,
-        'ThongSo': product.ThongSo,
-        'TrangThai': product.TrangThai,
-        'GiamGia': product.GiamGia
-      });
+    cartRef.child(cartItemId!).set({
+      'userID': FirebaseAuth.instance.currentUser!.uid,
+      'Id': product.Id,
+      'Ten': product.Ten,
+      'SoLuong': product.SoLuong,
+      'Gia': product.Gia,
+      'Hinh': product.Hinh,
+      'Loai': product.Loai,
+      'Mau': product.Mau,
+      'MauSac': product.MauSac,
+      'MoTa': product.MoTa,
+      'ThongSo': product.ThongSo,
+      'TrangThai': product.TrangThai,
+      'GiamGia': product.GiamGia
     });
+    /*  }); */
   }
 
   //
@@ -238,65 +238,75 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                               height: 20,
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Text(
-                                  _chiTietSp?.Ten ?? "",
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Text(
+                                    _chiTietSp?.Ten ?? "",
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                                Column(
-                                  children: [
-                                    Container(
-                                      height: 35,
-                                      alignment: Alignment.topCenter,
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey[200],
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          IconButton(
+                                  Column(
+                                    children: [
+                                      Container(
+                                        height: 35,
+                                        alignment: Alignment.topCenter,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[200],
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            IconButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _chiTietSp!.SoLuong--;
+                                                    _updateData(_chiTietSp!.Id,
+                                                        _chiTietSp!.SoLuong);
+                                                  });
+                                                },
+                                                icon: const Icon(Icons
+                                                    .remove_circle_outline)),
+                                            Text((_chiTietSp?.SoLuong ?? 1)
+                                                .toString()),
+                                            IconButton(
                                               onPressed: () {
                                                 setState(() {
-                                                  _chiTietSp!.SoLuong--;
+                                                  _chiTietSp!.SoLuong++;
                                                   _updateData(_chiTietSp!.Id,
                                                       _chiTietSp!.SoLuong);
                                                 });
                                               },
                                               icon: const Icon(
-                                                  Icons.remove_circle_outline)),
-                                          Text((_chiTietSp?.SoLuong ?? 1)
-                                              .toString()),
-                                          IconButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                _chiTietSp!.SoLuong++;
-                                                _updateData(_chiTietSp!.Id,
-                                                    _chiTietSp!.SoLuong);
-                                              });
-                                            },
-                                            icon: const Icon(
-                                                Icons.add_circle_outline,
-                                                color: Colors.black),
-                                          ),
-                                        ],
+                                                  Icons.add_circle_outline,
+                                                  color: Colors.black),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    const Text(
-                                      "Số lượng",
-                                      style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w300),
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
+                                      const Text(
+                                        "Số lượng",
+                                        style: TextStyle(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.w300),
+                                      )
+                                    ],
+                                  ),
+                                ]),
                             //Màu sắc sản phẩm
-
+                            Container(
+                              margin: const EdgeInsets.only(left: 25, top: 15),
+                              child: Text(
+                                '${_chiTietSp?.Gia ?? 1} VND',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
                             Container(
                               margin: const EdgeInsets.only(left: 25, top: 15),
                               child: const Text(

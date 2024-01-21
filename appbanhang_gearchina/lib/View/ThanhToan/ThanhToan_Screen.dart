@@ -72,11 +72,9 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
 
     // Tạo một hóa đơn mới
     DatabaseReference newHoaDonRef = hoaDonRef.push();
-    newHoaDonRef.set({
-      'UserID': userID,
-      'TongTien': _TongTien,
-    }).then((_) {
-      String? maHD = newHoaDonRef.key;
+    String? maHD = newHoaDonRef.key;
+    newHoaDonRef
+        .set({'UserID': userID, 'TongTien': _TongTien, 'MaHD': maHD}).then((_) {
       //Duyệt các sản phẩm được đặt
       for (var sanPham in widget.payItems) {
         DatabaseReference chiTietHDRef =

@@ -100,7 +100,7 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
             child: FirebaseAnimatedList(
                 query: ref,
                 itemBuilder: (context, snapshot, animation, index) {
-                  if (snapshot.child('userId').value.toString() == userId &&
+                  if (snapshot.child('userID').value.toString() == userId &&
                       snapshot.child('TrangThai').value.toString() == '1') {
                     return SingleChildScrollView(
                       child: Column(

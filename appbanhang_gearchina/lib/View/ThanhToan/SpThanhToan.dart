@@ -31,10 +31,10 @@ class _SpThanhToanState extends State<SpThanhToan> {
         FirebaseDatabase.instance.ref().child('HoaDon');
 
     // Tạo một hóa đơn mới
-    DatabaseReference newHoaDonRef = hoaDonRef.push();
+    DatabaseReference newHoaDonRef = hoaDonRef.push();    String? maHD = newHoaDonRef.key;
     newHoaDonRef.set(
-        {'UserID': userID, 'TongTien': tongTien, 'TrangThai': 1}).then((_) {
-      String? maHD = newHoaDonRef.key;
+        {'userID': userID, 'TongTien': tongTien, 'TrangThai': 1,'MaHD':maHD}).then((_) {
+  
       //Duyệt các sản phẩm được đặt
       for (var sanPham in _listSanPham) {
         DatabaseReference chiTietHDRef =
@@ -95,8 +95,8 @@ class _SpThanhToanState extends State<SpThanhToan> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    tongTien;
-    TinhTien();
+   // tongTien;
+  //  TinhTien();
   }
 
   double tongTien = 0;
@@ -209,7 +209,7 @@ class _SpThanhToanState extends State<SpThanhToan> {
             child: FirebaseAnimatedList(
                 query: ref,
                 itemBuilder: (context, snapshot, animation, index) {
-                  if (snapshot.child('userId').value.toString() == userId &&
+                  if (snapshot.child('userID').value.toString() == userId &&
                       snapshot.child('Mau').value.toString() == '1' &&
                       snapshot.child('TrangThai').value.toString() == '1') {
                     return Column(
