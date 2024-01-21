@@ -133,6 +133,28 @@ class _DoiMKState extends State<DoiMK> {
                   const Padding(padding: EdgeInsets.only(top: 10)),
                   ElevatedButton(
                     onPressed: () {
+                      if (mkcu.text.isEmpty ||
+                          mkmoi.text.isEmpty ||
+                          conf_mk.text.isEmpty) {
+                        setState(() {
+                          _errorMessage = 'Vui lòng nhập đầy đủ thông tin!';
+                        });
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text(_errorMessage),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text("Quay lại"))
+                                ],
+                              );
+                            });
+                        return;
+                      }
                       _doiMK();
                     },
                     style: ElevatedButton.styleFrom(

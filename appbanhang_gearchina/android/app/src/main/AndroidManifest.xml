@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="appbanhang_gearchina"
+        android:label="Gear Store"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

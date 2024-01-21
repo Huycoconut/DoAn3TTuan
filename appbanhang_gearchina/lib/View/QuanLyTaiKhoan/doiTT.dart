@@ -86,24 +86,44 @@ class _DoiTTState extends State<DoiTT> {
                   const Padding(padding: EdgeInsets.only(top: 10)),
                   ElevatedButton(
                     onPressed: () {
-                      updateUser();
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text("Chỉnh sửa thông tin thành công"),
-                              actions: [
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => bottomNav()));
-                                    },
-                                    child: Text("Quay lại"))
-                              ],
-                            );
-                          });
+                      if (hotenmoi.text.isEmpty ||
+                          sdtmoi.text.isEmpty ||
+                          diachimoi.text.isEmpty) {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text("Vui lòng nhập đầy đủ thông tin"),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text("Quay lại"))
+                                ],
+                              );
+                            });
+                      } else {
+                        updateUser();
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text("Chỉnh sửa thông tin thành công"),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    bottomNav()));
+                                      },
+                                      child: Text("Quay lại Trang chủ"))
+                                ],
+                              );
+                            });
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(500, 60),
