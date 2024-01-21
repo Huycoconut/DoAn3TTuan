@@ -32,7 +32,7 @@ class _PromotionState extends State<Promotion> {
                   children: [
                     Text(snapshot.child('Ten').value.toString()),
                     Text(
-                      "${snapshot.child('NgayBatDau').value.toString()} - ${snapshot.child('NgayKetThuc').value.toString()}",
+                      "Hiệu lực từ ${snapshot.child('NgayBatDau').value.toString()} - ${snapshot.child('NgayKetThuc').value.toString()}",
                       style: TextStyle(fontSize: 11),
                     )
                   ],

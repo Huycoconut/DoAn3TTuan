@@ -3,6 +3,7 @@ import 'package:appbanhang_gearchina/View/SanPham/data_SanPham.dart';
 import 'package:appbanhang_gearchina/View/ThanhToan/SpThanhToan.dart';
 import 'package:appbanhang_gearchina/View/GioHang/SpTrongGio.dart';
 import 'package:appbanhang_gearchina/View/ThanhToan/SuaDiaChi_Screen.dart';
+import 'package:appbanhang_gearchina/View/ThongBao/local_notification.dart';
 import 'package:appbanhang_gearchina/View/Trang_chu/botNav.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -73,8 +74,12 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
     // Tạo một hóa đơn mới
     DatabaseReference newHoaDonRef = hoaDonRef.push();
     String? maHD = newHoaDonRef.key;
-    newHoaDonRef
-        .set({'UserID': userID, 'TongTien': _TongTien, 'MaHD': maHD}).then((_) {
+    newHoaDonRef.set({
+      'userID': userID,
+      'TongTien': _TongTien,
+      'MaHD': maHD,
+      'TrangThai': 1
+    }).then((_) {
       //Duyệt các sản phẩm được đặt
       for (var sanPham in widget.payItems) {
         DatabaseReference chiTietHDRef =
@@ -416,6 +421,10 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
             onPressed: () {
               _createHoaDon();
               _xoaSpSauKhiDat();
+              LocalNotifications.showSimpleNotification(
+                  title: "Đặt hàng thành công",
+                  body: "Giá trị đơn hàng ${_TongTien}",
+                  payload: "");
             },
             child: const Text(
               "Đặt hàng",

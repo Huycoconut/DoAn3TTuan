@@ -1,6 +1,7 @@
 import 'package:appbanhang_gearchina/View/GioHang/class_LuuTruSp_TrongGio.dart';
 import 'package:appbanhang_gearchina/View/SanPham/data_SanPham.dart';
 import 'package:appbanhang_gearchina/View/ThanhToan/SuaDiaChi_Screen.dart';
+import 'package:appbanhang_gearchina/View/ThongBao/local_notification.dart';
 import 'package:appbanhang_gearchina/View/Trang_chu/botNav.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -31,10 +32,14 @@ class _SpThanhToanState extends State<SpThanhToan> {
         FirebaseDatabase.instance.ref().child('HoaDon');
 
     // Tạo một hóa đơn mới
-    DatabaseReference newHoaDonRef = hoaDonRef.push();    String? maHD = newHoaDonRef.key;
-    newHoaDonRef.set(
-        {'userID': userID, 'TongTien': tongTien, 'TrangThai': 1,'MaHD':maHD}).then((_) {
-  
+    DatabaseReference newHoaDonRef = hoaDonRef.push();
+    String? maHD = newHoaDonRef.key;
+    newHoaDonRef.set({
+      'userID': userID,
+      'TongTien': TinhTien(),
+      'TrangThai': 1,
+      'MaHD': maHD
+    }).then((_) {
       //Duyệt các sản phẩm được đặt
       for (var sanPham in _listSanPham) {
         DatabaseReference chiTietHDRef =
@@ -95,14 +100,17 @@ class _SpThanhToanState extends State<SpThanhToan> {
   void initState() {
     // TODO: implement initState
     super.initState();
-   // tongTien;
-  //  TinhTien();
+    // tongTien;
+    //  TinhTien();
   }
 
-  double tongTien = 0;
   //Tính tiền
   double TinhTien() {
-    final ref = FirebaseDatabase.instance.ref("GioHang");
+    double tongTien = 0;
+    final ref = FirebaseDatabase.instance
+        .ref("GioHang")
+        .orderByChild('userID')
+        .equalTo(userId);
     ref.onValue.listen((event) {
       _listSanPham = event.snapshot.children.map((snapshot) {
         return SanPham.fromSnapshot(snapshot);
@@ -367,6 +375,10 @@ class _SpThanhToanState extends State<SpThanhToan> {
             onPressed: () {
               _createHoaDon();
               // _xoaSpSauKhiDat();
+              LocalNotifications.showSimpleNotification(
+                  title: "Đặt hàng thành công",
+                  body: "Giá trị đơn hàng ${TinhTien()}",
+                  payload: "");
             },
             child: const Text(
               "Đặt hàng",

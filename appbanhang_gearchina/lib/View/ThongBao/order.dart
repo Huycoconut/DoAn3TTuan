@@ -22,7 +22,7 @@ class _OrderState extends State<Order> {
       child: FirebaseAnimatedList(
           query: ref,
           itemBuilder: (context, snapshot, animation, index) {
-            if (snapshot.child('userId').value.toString() == userId) {
+            if (snapshot.child('userID').value.toString() == userId) {
               return GestureDetector(
                 onTap: () {},
                 child: Container(
@@ -35,7 +35,7 @@ class _OrderState extends State<Order> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                          "Tổng tiền: ${snapshot.child('ThanhTien').value.toString()}"),
+                          "Tổng tiền: ${snapshot.child('TongTien').value.toString()}"),
                       Row(
                         children: [
                           const Text(

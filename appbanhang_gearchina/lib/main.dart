@@ -9,6 +9,7 @@ import 'package:appbanhang_gearchina/View/ThanhToan/SuaDiaChi_Screen.dart';
 import 'package:appbanhang_gearchina/View/ThanhToan/ThanhToan_Screen.dart';
 import 'package:appbanhang_gearchina/View/GioHang/GioHang_Screen.dart';
 import 'package:appbanhang_gearchina/View/SanPham/SanPham_screen.dart';
+import 'package:appbanhang_gearchina/View/ThongBao/local_notification.dart';
 import 'package:appbanhang_gearchina/View/Trang_chu/Home.dart';
 import 'package:appbanhang_gearchina/View/Trang_chu/botNav.dart';
 import 'package:appbanhang_gearchina/firebase_options.dart';
@@ -19,15 +20,28 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  // Tạo hive (LocalDatabase)
   await Hive.initFlutter('hiveusersfolder');
   await Hive.openBox("boxSlider");
+  // Lấy dữ liệu SlideShow về LocalDatabase cho lần đầu chạy
   await DB().getListSlider();
+  // Tạo Thông báo Local
+  await LocalNotifications.init();
+  // Yêu cầu quyền thông báo
+  await Permission.notification.isDenied.then((value) {
+    if (value) {
+      Permission.notification.request();
+    }
+  });
   runApp(const MyApp());
 }
 
@@ -43,6 +57,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: AuthScreen(),
+      routes: {'/home_screen': (context) => const AuthScreen()},
       debugShowCheckedModeBanner: false,
     );
   }
