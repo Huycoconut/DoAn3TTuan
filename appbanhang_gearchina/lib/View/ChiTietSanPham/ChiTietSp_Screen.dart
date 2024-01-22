@@ -305,7 +305,16 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                                   ),
                                 ]),
                             //Màu sắc sản phẩm
-
+                            Container(
+                              margin: const EdgeInsets.only(left: 25, top: 15),
+                              child: Text(
+                                (_chiTietSp?.Gia ?? 1).toString() + ' VND',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
                             Container(
                               margin: const EdgeInsets.only(left: 25, top: 15),
                               child: const Text(
