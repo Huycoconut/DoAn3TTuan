@@ -26,6 +26,7 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
   }
 
   bool isSelected = false;
+  bool isCheck = false;
 
   List<bool> isCheckedList = [];
 
@@ -41,7 +42,27 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
     final productRef = FirebaseDatabase.instance.ref("GioHang/$productId/Mau");
     productRef.set(newMau);
   }
+
   //
+  bool kiemTraGiohang() {
+    final productRef = FirebaseDatabase.instance.ref("GioHang");
+    productRef.once().then((DatabaseEvent snapshot) {
+      if (snapshot.snapshot.value != null) {
+        Map<dynamic, dynamic> gioHang =
+            snapshot.snapshot.value as Map<dynamic, dynamic>;
+        gioHang.forEach((key, value) {
+          setState(() {
+            if (value['Mau'] == '1') {
+              isCheck = false;
+            } else {
+              isCheck = true;
+            }
+          });
+        });
+      }
+    });
+    return isCheck;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,6 +120,7 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
                                               : '1';
                                           _chuyenTrangThai_Mau(
                                               productID!, newMau);
+                                          kiemTraGiohang();
                                         });
                                       },
                                       child: Container(
@@ -204,6 +226,7 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
                                                       productID!, newTrangThai);
                                                   print(isSelected);
                                                 });
+                                                kiemTraGiohang();
                                               }
                                             : null,
                                         icon: const Icon(
@@ -232,7 +255,7 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            onPressed: (dem == 0 ? false : true)
+            onPressed: isCheck == false
                 ? () {
                     Navigator.push(
                       context,
