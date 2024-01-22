@@ -112,32 +112,7 @@ class _LoginState extends State<Login> {
     return null;
   }
 //Huy thêm
-  void _addToCart() {
-    //User? user = FirebaseAuth.instance.currentUser;
-   // String userID = user!;
-    DatabaseReference cartRef =
-        FirebaseDatabase.instance.ref().child('GioHang');
-
-    // Tạo ID duy nhất cho sản phẩm trong giỏ hàng
-    String? cartItemId = cartRef.push().key;
-
-    cartRef.child(cartItemId!).set({
-      'userID':FirebaseAuth.instance.currentUser?.uid,
-      'Id': 1,
-      'Ten': 'iphone',
-      'SoLuong': 1,
-      'Gia': 1,
-      'Hinh': '3',
-      'Loai': '5',
-      'Mau': 7,
-      'MauSac': 2,
-      'MoTa': 'product.MoTa',
-      'ThongSo': 'product.ThongSo',
-      'TrangThai': 0,
-      'GiamGia': 'product.GiamGia'
-    });
-  }
-
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -240,7 +215,7 @@ class _LoginState extends State<Login> {
               ElevatedButton(
                 onPressed: () {
                   SignIn();
-                  _addToCart();
+                 
                 },
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(500, 60),

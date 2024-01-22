@@ -255,7 +255,7 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            onPressed: isCheck == false
+            onPressed: isCheck
                 ? () {
                     Navigator.push(
                       context,
