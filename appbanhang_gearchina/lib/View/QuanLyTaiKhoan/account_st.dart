@@ -17,7 +17,8 @@ class QuanLytaiKhoan extends StatefulWidget {
 }
 
 class _QuanLytaiKhoanState extends State<QuanLytaiKhoan> {
-  final dbref = FirebaseDatabase.instance.ref().child('TaiKhoan');
+
+  final dbref = FirebaseDatabase.instance.ref().child('/TaiKhoan');
   @override
   Widget build(BuildContext context) {
     String? userId;
@@ -26,236 +27,206 @@ class _QuanLytaiKhoanState extends State<QuanLytaiKhoan> {
     }
 
     return Scaffold(
-        body: Expanded(
-            child: FirebaseAnimatedList(
-                query: dbref,
-                itemBuilder: (context, snapshot, animation, index) {
-                  if (snapshot.child('userID').value.toString() == userId) {
-                    Map newtt = snapshot.value as Map;
-                    newtt['key'] = snapshot.key;
-                    return Container(
-                      margin: const EdgeInsets.all(20),
-                      width: MediaQuery.of(context).size.width,
-                      alignment: Alignment.topLeft,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Quản Lý Tài Khoản",
-                                  style: TextStyle(
-                                      fontSize: 35.0,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.account_circle,
-                                  size: 100,
-                                )
-                              ],
-                            ),
-                            //khung dk_email
-                            const Text(
-                              "Email",
-                              style: TextStyle(fontSize: 20.0),
-                            ),
-                            TextField(
-                              enabled: false,
-                              decoration: InputDecoration(
-                                  prefixIcon: const Icon(Icons.email),
-                                  hintText:
-                                      snapshot.child('email').value.toString(),
-                                  border: const OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10.0)),
-                                    borderSide: BorderSide(
-                                        color: Color.fromRGBO(56, 60, 160, 20)),
-                                  )),
-                            ),
-                            //khung dk_hoten
-                            const Text(
-                              "Họ Tên",
-                              style: TextStyle(fontSize: 20.0),
-                            ),
-                            TextField(
-                              decoration: InputDecoration(
-                                  enabled: false,
-                                  prefixIcon: const Icon(Icons.person),
-                                  hintText:
-                                      snapshot.child('Hoten').value.toString(),
-                                  border: const OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10.0)),
-                                    borderSide: BorderSide(
-                                        color: Color.fromRGBO(56, 60, 160, 20)),
-                                  )),
-                            ),
-                            //khung dk_sdt
-                            const Text(
-                              "Số Điện Thoại",
-                              style: TextStyle(fontSize: 20.0),
-                            ),
-                            TextField(
-                              decoration: InputDecoration(
-                                  enabled: false,
-                                  prefixIcon: const Icon(Icons.phone),
-                                  hintText:
-                                      snapshot.child('SĐT').value.toString(),
-                                  border: const OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10.0)),
-                                    borderSide: BorderSide(
-                                        color: Color.fromRGBO(56, 60, 160, 20)),
-                                  )),
-                            ),
-                            //khung dk_nhaplaimatkhau
-                            const Text(
-                              "Địa chỉ",
-                              style: TextStyle(fontSize: 20.0),
-                            ),
-                            TextField(
-                              decoration: InputDecoration(
-                                  enabled: false,
-                                  prefixIcon: const Icon(Icons.location_on),
-                                  hintText:
-                                      snapshot.child('DiaChi').value.toString(),
-                                  border: const OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10.0)),
-                                    borderSide: BorderSide(
-                                        color: Color.fromRGBO(56, 60, 160, 20)),
-                                  )),
-                            ),
-                            const Padding(padding: EdgeInsets.only(top: 30)),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    // đường dẫn đổi form mật khẩu
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const DoiMK()));
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize: Size(
-                                        (MediaQuery.of(context).size.width) /
-                                            2.3,
-                                        60),
-                                    backgroundColor:
-                                        const Color.fromRGBO(56, 60, 160, 20),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16.0, vertical: 8.0),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                  ),
-                                  child: const Text(
-                                    'Đổi Mật Khẩu',
-                                    style: TextStyle(
-                                        fontSize: 20.0, color: Colors.white),
-                                  ),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    //xu ly chuc nang luu thong tin
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const DoiTT()));
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize: Size(
-                                        (MediaQuery.of(context).size.width) /
-                                            2.3,
-                                        60),
-                                    backgroundColor:
-                                        const Color.fromRGBO(56, 60, 160, 20),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16.0, vertical: 8.0),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                  ),
-                                  child: const Text(
-                                    'Đổi Thông Tin',
-                                    style: TextStyle(
-                                        fontSize: 20.0, color: Colors.white),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            //quan ly don hang
-                            const Padding(padding: EdgeInsets.only(top: 30)),
-                            ElevatedButton(
-                              onPressed: () {
-                                //Đường dẫn form quan lý đơn hàng
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Screen_HoaDon()));
-                              },
-                              style: ElevatedButton.styleFrom(
-                                minimumSize: const Size(500, 60),
-                                backgroundColor:
-                                    const Color.fromRGBO(56, 60, 160, 20),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0, vertical: 8.0),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                              ),
-                              child: const Text(
-                                'Quản Lý Đơn Hàng',
-                                style: TextStyle(
-                                    fontSize: 20.0, color: Colors.white),
+      body: Expanded(
+        child: FirebaseAnimatedList(
+          query: dbref,
+          itemBuilder: (context, snapshot, animation, index) {
+            if (snapshot.child('userID').value.toString() == userId){ 
+              Map newtt = snapshot.value as Map;
+              newtt['key'] = snapshot.key;
+              return Container(
+                margin: const EdgeInsets.all(20),
+                width: MediaQuery.of(context).size.width,
+                alignment: Alignment.topLeft,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start  ,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Quản Lý Tài Khoản",
+                            style: TextStyle(fontSize: 35.0, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.account_circle,
+                            size: 100,
+                          )
+                        ],
+                      ),
+                      //khung dk_email
+                      const Text(
+                        "Email",
+                        style: TextStyle(fontSize: 20.0),
+                      ),
+                      TextField(
+                        enabled: false,
+                        decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.email),
+                            hintText: snapshot.child('email').value.toString(),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                              borderSide:
+                                  BorderSide(color: Color.fromRGBO(56, 60, 160, 20)),
+                            )),
+                      ),
+                      //khung dk_hoten
+                      const Text(
+                        "Họ Tên",
+                        style: TextStyle(fontSize: 20.0),
+                      ),
+                      TextField(
+                        decoration: InputDecoration(
+                            enabled: false,
+                            prefixIcon: Icon(Icons.person),
+                            hintText: snapshot.child('Hoten').value.toString(),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                              borderSide:
+                                  BorderSide(color: Color.fromRGBO(56, 60, 160, 20)),
+                            )),
+                      ),
+                      //khung dk_sdt
+                      const Text(
+                        "Số Điện Thoại",
+                        style: TextStyle(fontSize: 20.0),
+                      ),
+                      TextField(
+                        decoration: InputDecoration(
+                            enabled: false,
+                            prefixIcon: Icon(Icons.phone),
+                            hintText: snapshot.child('SĐT').value.toString(),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                              borderSide:
+                                  BorderSide(color: Color.fromRGBO(56, 60, 160, 20)),
+                            )),
+                      ),
+                      //khung dk_nhaplaimatkhau
+                      const Text(
+                        "Địa chỉ",
+                        style: TextStyle(fontSize: 20.0),
+                      ),
+                      TextField(
+                        decoration: InputDecoration(
+                            enabled: false,
+                            prefixIcon: Icon(Icons.location_on),
+                            hintText: snapshot.child('DiaChi').value.toString(),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                              borderSide:
+                                  BorderSide(color: Color.fromRGBO(56, 60, 160, 20)),
+                            )),
+                      ),
+                      Padding(padding: EdgeInsets.only(top: 30)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              // đường dẫn đổi form mật khẩu
+                              Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => DoiMK()));
+                            },
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: Size((MediaQuery.of(context).size.width) / 2.3, 60),
+                              backgroundColor: const Color.fromRGBO(56, 60, 160, 20),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 8.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
                               ),
                             ),
-                            const Padding(padding: EdgeInsets.only(top: 30)),
-                            //dangxuat
-                            ElevatedButton(
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return LogoutDialog();
-                                  },
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                minimumSize: const Size(500, 60),
-                                backgroundColor:
-                                    const Color.fromRGBO(56, 60, 160, 20),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0, vertical: 8.0),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                              ),
-                              child: const Text(
-                                'Đăng Xuất',
-                                style: TextStyle(
-                                    fontSize: 20.0, color: Colors.white),
+                            child: const Text(
+                              'Đổi Mật Khẩu',
+                              style: TextStyle(fontSize: 20.0, color: Colors.white),
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              //xu ly chuc nang luu thong tin
+                              Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => DoiTT()));
+                            },
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: Size((MediaQuery.of(context).size.width) / 2.3, 60),
+                              backgroundColor: const Color.fromRGBO(56, 60, 160, 20),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 8.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
                               ),
                             ),
-                          ],
+                            child: const Text(
+                              'Đổi Thông Tin',
+                              style: TextStyle(fontSize: 20.0, color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      ),
+                      //quan ly don hang
+                      const Padding(padding: EdgeInsets.only(top: 30)),
+                      ElevatedButton(
+                        onPressed: () {
+                          //Đường dẫn form quan lý đơn hàng
+                        },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(500, 60),
+                          backgroundColor: const Color.fromRGBO(56, 60, 160, 20),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 8.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                        child: const Text(
+                          'Quản Lý Đơn Hàng',
+                          style: TextStyle(fontSize: 20.0, color: Colors.white),
                         ),
                       ),
-                    );
-                  } else {
-                    return Container();
-                  }
-                })));
+                      const Padding(padding: EdgeInsets.only(top: 30)),
+                      //dangxuat
+                      ElevatedButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return LogoutDialog();
+                            },
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(500, 60),
+                          backgroundColor: const Color.fromRGBO(56, 60, 160, 20),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 8.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                        child: const Text(
+                          'Đăng Xuất',
+                          style: TextStyle(fontSize: 20.0, color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+            else{
+              return  Container(
+              );
+            }
+          })
+      )
+    );
   }
 }
 

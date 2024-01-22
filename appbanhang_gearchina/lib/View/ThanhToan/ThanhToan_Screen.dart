@@ -89,7 +89,7 @@ class _thanhToan_ScreenState extends State<thanhToan_Screen> {
         newChiTietHD.set({
           'MaHD': maHD,
           'TenSanPham': sanPham.Ten,
-          'GiaSanPham': sanPham.Gia,
+          'DonGia': sanPham.Gia,
           'SoLuong': sanPham.SoLuong,
           'TrangThai': sanPham.TrangThai
         });

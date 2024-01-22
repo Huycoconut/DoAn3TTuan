@@ -18,7 +18,7 @@ class SpThanhToan extends StatefulWidget {
 class _SpThanhToanState extends State<SpThanhToan> {
   // ignore: non_constant_identifier_names
   final double _TongTien = 0;
-  bool _isPress = true;
+  bool _isPress = false;
 
   List<SanPham> _listSanPham = [];
   List<SanPham> cartItems = [];
@@ -40,20 +40,21 @@ class _SpThanhToanState extends State<SpThanhToan> {
       'TrangThai': 1,
       'MaHD': maHD
     }).then((_) {
-      //Duyệt các sản phẩm được đặt
+      // Duyệt các sản phẩm được đặt
       for (var sanPham in _listSanPham) {
         DatabaseReference chiTietHDRef =
             FirebaseDatabase.instance.ref('ChiTietHD');
-        //Thêm thông tin các sản phẩm được đặt vào ChiTietHD
+        // Thêm thông tin các sản phẩm được đặt vào ChiTietHD
         DatabaseReference newChiTietHD = chiTietHDRef.push();
         newChiTietHD.set({
           'MaHD': maHD,
           'TenSanPham': sanPham.Ten,
-          'GiaSanPham': sanPham.Gia,
+          'DonGia': sanPham.Gia,
           'SoLuong': sanPham.SoLuong,
           'TrangThai': sanPham.TrangThai
         });
       }
+      xoa();
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -66,7 +67,7 @@ class _SpThanhToanState extends State<SpThanhToan> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    //Chuyển qua màn hình quản lý đơn hàng
+                    // Chuyển qua màn hình quản lý đơn hàng
                     MaterialPageRoute(builder: (context) => const bottomNav()),
                   );
                 },
@@ -79,7 +80,7 @@ class _SpThanhToanState extends State<SpThanhToan> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Đặt hàng thành thất bại'),
+          title: const Text('Đặt hàng thất bại'),
           content: const Text('Vui lòng thử lại!'),
           actions: [
             TextButton(
@@ -100,11 +101,14 @@ class _SpThanhToanState extends State<SpThanhToan> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    //  kiemTraSanPham();
     // tongTien;
     //  TinhTien();
   }
 
   //Tính tiền
+  //onValue.listen trên tham chiếu ref. Điều này lắng nghe sự kiện khi giá trị
+  //của nút "GioHang" thay đổi trong Firebase.
   double TinhTien() {
     double tongTien = 0;
     final ref = FirebaseDatabase.instance
@@ -112,6 +116,8 @@ class _SpThanhToanState extends State<SpThanhToan> {
         .orderByChild('userID')
         .equalTo(userId);
     ref.onValue.listen((event) {
+      // children trên snapshot để lấy danh sách các nút con của "GioHang" firebase
+      //chuyển đổi tất cả các nút con của “GioHang” thành các đối tượng SanPham
       _listSanPham = event.snapshot.children.map((snapshot) {
         return SanPham.fromSnapshot(snapshot);
       }).toList();
@@ -120,8 +126,48 @@ class _SpThanhToanState extends State<SpThanhToan> {
     for (var items in _listSanPham) {
       tongTien = tongTien + (items.Gia * items.SoLuong);
     }
-    setState(() {});
+    // setState(() {});
     return tongTien;
+  }
+
+//
+/*   bool checkTruocKhiDat = false;
+  void kiemTraSanPham() {
+    final ref = FirebaseDatabase.instance
+        .ref("GioHang")
+        .orderByChild('userID')
+        .equalTo(userId);
+    ref.onValue.listen((event) {
+      // children trên snapshot để lấy danh sách các nút con của "GioHang" firebase
+      //chuyển đổi tất cả các nút con của “GioHang” thành các đối tượng SanPham
+      _listSanPham = event.snapshot.children.map((snapshot) {
+        return SanPham.fromSnapshot(snapshot);
+      }).toList();
+    });
+
+    for (var items in _listSanPham) {
+      setState(() {
+        (items.Mau == '0' && items.Id == null)
+            ? checkTruocKhiDat == true
+            : false;
+      });
+    }
+  }
+ */
+//
+  void xoa() {
+    final ref = FirebaseDatabase.instance.ref("GioHang");
+
+    ref.orderByChild('userID').equalTo(userId).once().then((snapshot) {
+      Map<dynamic, dynamic> gioHangData =
+          snapshot.snapshot.value as Map<dynamic, dynamic>;
+
+      gioHangData.forEach((key, value) {
+        if (value['Mau'] == '1') {
+          ref.child(key).remove();
+        }
+      });
+    });
   }
 
   @override
@@ -129,7 +175,6 @@ class _SpThanhToanState extends State<SpThanhToan> {
     // TinhTien();
     //    tingTongThanhToan();
     var media = MediaQuery.of(context).size;
-    double totalPrice = 0;
 
     String? userId;
     if (FirebaseAuth.instance.currentUser != null) {
@@ -372,14 +417,17 @@ class _SpThanhToanState extends State<SpThanhToan> {
                 backgroundColor: const Color.fromRGBO(56, 60, 160, 20),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10))),
-            onPressed: () {
-              _createHoaDon();
-              // _xoaSpSauKhiDat();
-              LocalNotifications.showSimpleNotification(
-                  title: "Đặt hàng thành công",
-                  body: "Giá trị đơn hàng ${TinhTien()}",
-                  payload: "");
-            },
+            onPressed: _isPress
+                ? () {
+                    _createHoaDon();
+
+                    //   doiTrangThaiSanPhamTinhTien();
+                    LocalNotifications.showSimpleNotification(
+                        title: "Đặt hàng thành công",
+                        body: "Giá trị đơn hàng ${TinhTien()}",
+                        payload: "");
+                  }
+                : null,
             child: const Text(
               "Đặt hàng",
               style: TextStyle(color: Colors.white, fontSize: 17),

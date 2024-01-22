@@ -23,7 +23,6 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
   @override
   void initState() {
     super.initState();
-    isSelected;
   }
 
   bool isSelected = false;
@@ -43,42 +42,6 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
     productRef.set(newMau);
   }
   //
-
-//
-/*   void _thanhToanSp() {
-    String? userId;
-    if (FirebaseAuth.instance.currentUser != null) {
-      userId = FirebaseAuth.instance.currentUser?.uid;
-    }
-    final ref = FirebaseDatabase.instance.ref("GioHang");
-
-    final refg = FirebaseDatabase.instance.ref("GioHang");
-    ref.orderByChild("userId").equalTo(userId).onValue.listen((event) {
-      final data = event.snapshot.value as Map<dynamic, dynamic>?;
-      if (data != null) {
-        data.forEach((key, value) {
-          final productData = value as Map<dynamic, dynamic>;
-          if (productData["sanPham"]["Mau"] == "1") {
-            final product = SanPham(
-              GiamGia: _chiTietSp!.GiamGia,
-              Id: _chiTietSp!.Id,
-              Ten: _chiTietSp!.Ten,
-              SoLuong: _chiTietSp!.SoLuong,
-              Gia: _chiTietSp!.Gia,
-              Hinh: _chiTietSp!.Hinh,
-              Loai: _chiTietSp!.Loai,
-              Mau: _chiTietSp!.Mau,
-              MauSac: _chiTietSp!.MauSac,
-              MoTa: _chiTietSp!.MoTa,
-              ThongSo: _chiTietSp!.ThongSo,
-              TrangThai: _chiTietSp!.TrangThai,
-            );
-            selectedProducts.add(product);
-          }
-        });
-      }
-    });
-  } */
 
   @override
   Widget build(BuildContext context) {
@@ -105,123 +68,151 @@ class _gioHang_ScreenState extends State<gioHang_Screen> {
                     return SingleChildScrollView(
                       child: Column(
                         children: [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                snapshot.child('Mau').value.toString() == '1'
-                                    ? isSelected == false
-                                    : true;
-                                final productID = snapshot.key;
-                                final TrangThaiHienTai =
-                                    snapshot.child('Mau').value.toString();
-                                TrangThaiHienTai == '1' ? (dem++) : (dem--);
-                                final newMau =
-                                    TrangThaiHienTai == '1' ? '0' : '1';
-                                _chuyenTrangThai_Mau(productID!, newMau);
-                              });
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.only(bottom: 15),
-                              padding: const EdgeInsets.only(bottom: 15),
-                              decoration:
-                                  snapshot.child('Mau').value.toString() == '1'
-                                      ? BoxDecoration(
-                                          border: Border.all(
-                                            color: Colors.green,
-                                            width: 2.0,
-                                          ),
-                                        )
-                                      : null,
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Column(
-                                        children: [
-                                          Image.network(
-                                            snapshot
-                                                .child('Hinh')
-                                                .value
-                                                .toString(),
-                                            width: media.width / 4.23,
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            snapshot
-                                                .child('Ten')
-                                                .value
-                                                .toString(),
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Text(
-                                              "Số lượng: ${snapshot.child('SoLuong').value.toString()}"),
-                                          Text(
-                                            "Màu: ${snapshot.child('MauSac').child('TenMau').child('TrangThai').value.toString() == '0' ? "Xám" : snapshot.child('MauSac').child('TenMau').child('TrangThai').value.toString() == '1' ? "Đen" : "Trắng"}",
-                                          ),
-                                          Row(
-                                            children: [
-                                              Text(
+                          Container(
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          snapshot
+                                                      .child('Mau')
+                                                      .value
+                                                      .toString() ==
+                                                  '1'
+                                              ? isSelected == false
+                                              : true;
+                                          print(isSelected);
+                                          final productID = snapshot.key;
+                                          final TrangThaiHienTai = snapshot
+                                              .child('Mau')
+                                              .value
+                                              .toString();
+                                          TrangThaiHienTai == '1'
+                                              ? (dem++)
+                                              : (dem--);
+                                          final newMau = TrangThaiHienTai == '1'
+                                              ? '0'
+                                              : '1';
+                                          _chuyenTrangThai_Mau(
+                                              productID!, newMau);
+                                        });
+                                      },
+                                      child: Container(
+                                        margin:
+                                            const EdgeInsets.only(bottom: 15),
+                                        padding: const EdgeInsets.only(
+                                            bottom: 15, left: 20, right: 30),
+                                        decoration: snapshot
+                                                    .child('Mau')
+                                                    .value
+                                                    .toString() ==
+                                                '1'
+                                            ? BoxDecoration(
+                                                border: Border.all(
+                                                  color: Colors.green,
+                                                  width: 2.0,
+                                                ),
+                                              )
+                                            : null,
+                                        child: Row(
+                                          children: [
+                                            Column(
+                                              children: [
+                                                Image.network(
                                                   snapshot
-                                                      .child('GiamGia')
+                                                      .child('Hinh')
+                                                      .value
+                                                      .toString(),
+                                                  width: media.width / 4.23,
+                                                ),
+                                              ],
+                                            ),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  snapshot
+                                                      .child('Ten')
                                                       .value
                                                       .toString(),
                                                   style: const TextStyle(
-                                                    decoration: TextDecoration
-                                                        .lineThrough,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Colors.grey,
-                                                  )),
-                                              Text(
-                                                snapshot
-                                                    .child('Gia')
-                                                    .value
-                                                    .toString(),
-                                                style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.redAccent),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                      IconButton(
-                                          onPressed: isSelected == true
-                                              ? () {
-                                                  setState(() {
-                                                    final productID =
-                                                        snapshot.key;
-                                                    final TrangThaiHienTai =
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Text(
+                                                    "Số lượng: ${snapshot.child('SoLuong').value.toString()}"),
+                                                Text(
+                                                  "Màu: ${snapshot.child('MauSac').child('TenMau').child('TrangThai').value.toString() == '0' ? "Xám" : snapshot.child('MauSac').child('TenMau').child('TrangThai').value.toString() == '1' ? "Đen" : "Trắng"}",
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Text(
                                                         snapshot
-                                                            .child('TrangThai')
+                                                            .child('GiamGia')
                                                             .value
-                                                            .toString();
+                                                            .toString(),
+                                                        style: const TextStyle(
+                                                          decoration:
+                                                              TextDecoration
+                                                                  .lineThrough,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: Colors.grey,
+                                                        )),
+                                                    Text(
+                                                      snapshot
+                                                          .child('Gia')
+                                                          .value
+                                                          .toString(),
+                                                      style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color:
+                                                              Colors.redAccent),
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    IconButton(
+                                        onPressed: isSelected == false
+                                            ? () {
+                                                setState(() {
+                                                  isSelected = !isSelected;
+                                                  final productID =
+                                                      snapshot.key;
+                                                  final TrangThaiHienTai =
+                                                      snapshot
+                                                          .child('TrangThai')
+                                                          .value
+                                                          .toString();
 
-                                                    final newTrangThai =
-                                                        TrangThaiHienTai == '1'
-                                                            ? '0'
-                                                            : '1';
-                                                    _capNhatTrangThaiSp(
-                                                        productID!,
-                                                        newTrangThai);
-                                                  });
-                                                }
-                                              : null,
-                                          icon: const Icon(
-                                            Icons.restore_from_trash,
-                                            color: Colors.redAccent,
-                                          ))
-                                    ],
-                                  ),
-                                ],
-                              ),
+                                                  final newTrangThai =
+                                                      TrangThaiHienTai == '1'
+                                                          ? '0'
+                                                          : '1';
+                                                  _capNhatTrangThaiSp(
+                                                      productID!, newTrangThai);
+                                                  print(isSelected);
+                                                });
+                                              }
+                                            : null,
+                                        icon: const Icon(
+                                          Icons.restore_from_trash,
+                                          color: Colors.redAccent,
+                                        ))
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
                         ],

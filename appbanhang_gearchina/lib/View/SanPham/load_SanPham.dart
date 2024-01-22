@@ -50,6 +50,33 @@ class _Load_SanPhamState extends State<Load_SanPham> {
     });
   }
 
+//
+  void _addToCart() {
+    //User? user = FirebaseAuth.instance.currentUser;
+    // String userID = user!;
+    DatabaseReference cartRef =
+        FirebaseDatabase.instance.ref().child('GioHang');
+
+    // Tạo ID duy nhất cho sản phẩm trong giỏ hàng
+    String? cartItemId = cartRef.push().key;
+
+    cartRef.child(cartItemId!).set({
+      'userID': FirebaseAuth.instance.currentUser?.uid,
+      'Id': 1,
+      'Ten': 'iphone',
+      'SoLuong': 1,
+      'Gia': 0,
+      'Hinh': '3',
+      'Loai': '5',
+      'Mau': 7,
+      'MauSac': 2,
+      'MoTa': 'product.MoTa',
+      'ThongSo': 'product.ThongSo',
+      'TrangThai': 0,
+      'GiamGia': 'product.GiamGia'
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -85,6 +112,7 @@ class _Load_SanPhamState extends State<Load_SanPham> {
                 onTap: () {
                   setState(() {
                     _updateData_SoLuong_BanDau(index);
+                    _addToCart();
                     Navigator.push(
                       context,
                       MaterialPageRoute(

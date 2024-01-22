@@ -21,7 +21,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -33,18 +32,10 @@ void main() async {
   // Tạo hive (LocalDatabase)
   await Hive.initFlutter('hiveusersfolder');
   await Hive.openBox("boxSlider");
-  await Hive.openBox("boxTongTien");
-  await Hive.openBox("boxTrangThai");
   // Lấy dữ liệu SlideShow về LocalDatabase
   await DB().getListSlider();
   // Tạo Thông báo Local
   await LocalNotifications.init();
-  // Yêu cầu quyền thông báo
-  await Permission.notification.isDenied.then((value) {
-    if (value) {
-      Permission.notification.request();
-    }
-  });
   //Thông báo trạng thái đơn hàng
   ThongBaoDonHang();
   runApp(const MyApp());
@@ -61,7 +52,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: AuthScreen(),
+      home: const AuthScreen(),
       routes: {'/home_screen': (context) => const AuthScreen()},
       debugShowCheckedModeBanner: false,
     );

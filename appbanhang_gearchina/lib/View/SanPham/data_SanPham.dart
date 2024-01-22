@@ -10,7 +10,7 @@ class SanPham {
   String TrangThai;
   var Id;
   final Mau;
-  final Gia;
+ int Gia=0;
   final MauSac;
   final GiamGia;
 
@@ -34,7 +34,7 @@ class SanPham {
     return SanPham(
       GiamGia: snapshot.child('GiamGia').value,
       MauSac: snapshot.child("MauSac").value,
-      Gia: snapshot.child('Gia').value,
+      Gia:int.parse(snapshot.child('Gia').value.toString()),
       Hinh: snapshot.child('Hinh').value,
       Id: snapshot.child('Id').value,
       Loai: snapshot.child('Loai').value,

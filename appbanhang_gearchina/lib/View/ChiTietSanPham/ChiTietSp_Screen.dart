@@ -305,16 +305,7 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                                   ),
                                 ]),
                             //Màu sắc sản phẩm
-                            Container(
-                              margin: const EdgeInsets.only(left: 25, top: 15),
-                              child: Text(
-                                '${_chiTietSp?.Gia ?? 1} VND',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
-                              ),
-                            ),
+
                             Container(
                               margin: const EdgeInsets.only(left: 25, top: 15),
                               child: const Text(
@@ -400,7 +391,7 @@ class _chiTietSp_ScreenState extends State<chiTietSp_Screen> {
                                             ? Icons.circle
                                             : Icons.check_circle_rounded,
                                         size: 40,
-                                        color: Colors.pinkAccent,
+                                        color: Colors.grey[200],
                                       ),
                                       onPressed: () {
                                         setState(() {

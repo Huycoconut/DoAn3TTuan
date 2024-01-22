@@ -1,7 +1,7 @@
 import 'package:appbanhang_gearchina/main.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-class Notification {
+class Notificationn {
   final _firebaseMessaging = FirebaseMessaging.instance;
 
   Future<void> initNotifications() async {
