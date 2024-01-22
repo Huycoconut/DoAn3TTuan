@@ -18,7 +18,7 @@ class QuanLytaiKhoan extends StatefulWidget {
 
 class _QuanLytaiKhoanState extends State<QuanLytaiKhoan> {
 
-  final dbref = FirebaseDatabase.instance.ref().child('/TaiKhoan');
+  final dbref = FirebaseDatabase.instance.ref().child('TaiKhoan');
   @override
   Widget build(BuildContext context) {
     String? userId;
